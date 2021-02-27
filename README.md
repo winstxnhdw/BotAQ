@@ -18,3 +18,6 @@ An attack is performed on Am-Boss and checked if Am-Boss is killed for every att
 
 ### Repeat
 If Am-Boss is killed, the steps are repeated without the setting the loadout again. This cycle eventually stops when the maximum daily limit of fighting Am-Boss is reached.
+
+## Future Works
+There may be plans to use a Optical Character Recognition (OCR) engine or deep-learning model to recognise certain texts and improve the versatility of this project.
