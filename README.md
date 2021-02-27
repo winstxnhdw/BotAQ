@@ -7,7 +7,7 @@ BotAQ is based on five fundamental steps.
 ### Finding Am-Boss
 A template matcher looks for Am-Boss and challenges it.
 
-### Set loadout
+### Set Loadout
 A one-time phase to permanently set the user's loadout is engaged to identify if the user has utilised specific abilities/equipments. This is to ensure that the boss is killing Am-Boss as efficiently as possible.
 
 ### Prepare
