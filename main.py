@@ -8,6 +8,7 @@ class BotAQ:
         print("Initialising bot...")
         
         self.delay = 0.4
+        self.threshold = 0.8
 
     def path(self, name):
 
@@ -24,69 +25,69 @@ class BotAQ:
         print("Entering prepartion phase...")
 
         # Find and clicks skills tab
-        while py.locateOnScreen(self.path('skills'), grayscale=True, confidence=0.9) is None:
+        while py.locateOnScreen(self.path('skills'), grayscale=True, confidence=self.threshold) is None:
             os.system('cls')
             print("Finding skills tab...")
             time.sleep(self.delay)
-        skillscoords = py.locateCenterOnScreen(self.path('skills'), grayscale=True, confidence=0.9)
+        skillscoords = py.locateCenterOnScreen(self.path('skills'), grayscale=True, confidence=self.threshold)
         py.click(skillscoords)
 
         # Find and clicks imbue buff
-        while py.locateOnScreen(self.path('imbue'), grayscale=True, confidence=0.9) is None:
+        while py.locateOnScreen(self.path('imbue'), grayscale=True, confidence=self.threshold) is None:
             os.system('cls')
             print("Finding imbue...")
             time.sleep(self.delay)
-        imbuecoords = py.locateCenterOnScreen(self.path('imbue'), grayscale=True, confidence=0.9)
+        imbuecoords = py.locateCenterOnScreen(self.path('imbue'), grayscale=True, confidence=self.threshold)
         py.click(imbuecoords)
         
         # Find and clicks menu to exit skills
-        while py.locateOnScreen(self.path('menu'), grayscale=True, confidence=0.9) is None:
+        while py.locateOnScreen(self.path('menu'), grayscale=True, confidence=self.threshold) is None:
             os.system('cls')
             print("Finding menu...")
             time.sleep(self.delay)
-        menucoords = py.locateCenterOnScreen(self.path('menu'), grayscale=True, confidence=0.9)
+        menucoords = py.locateCenterOnScreen(self.path('menu'), grayscale=True, confidence=self.threshold)
         py.click(menucoords)
 
         # Find and enables shield ability
-        while py.locateOnScreen(self.path('poseidon'), grayscale=True, confidence=0.9) is None:
+        while py.locateOnScreen(self.path('poseidon'), grayscale=True, confidence=self.threshold) is None:
             os.system('cls')
             print("Finding shield...")
             time.sleep(self.delay)
-        poseidoncoords = py.locateCenterOnScreen(self.path('poseidon'), grayscale=True, confidence=0.9)
+        poseidoncoords = py.locateCenterOnScreen(self.path('poseidon'), grayscale=True, confidence=self.threshold)
         py.click(poseidoncoords)
 
         # Find and clicks pets tab
-        while py.locateOnScreen(self.path('pets'), grayscale=True, confidence=0.9) is None:
+        while py.locateOnScreen(self.path('pets'), grayscale=True, confidence=self.threshold) is None:
             os.system('cls')
             print("Finding pets tab...")
             time.sleep(self.delay)
-        petscoords = py.locateCenterOnScreen(self.path('pets'), grayscale=True, confidence=0.9)
+        petscoords = py.locateCenterOnScreen(self.path('pets'), grayscale=True, confidence=self.threshold)
         py.click(petscoords)
 
         # Find and unequips item
-        while py.locateOnScreen(self.path('hide'), grayscale=True, confidence=0.9) is None:
+        while py.locateOnScreen(self.path('hide'), grayscale=True, confidence=self.threshold) is None:
             os.system('cls')
             print("Finding pet to hide...")
             time.sleep(self.delay)
-        hidecoords = py.locateCenterOnScreen(self.path('hide'), grayscale=True, confidence=0.9)
+        hidecoords = py.locateCenterOnScreen(self.path('hide'), grayscale=True, confidence=self.threshold)
         py.click(hidecoords, clicks=2)
 
     def prepare(self):
 
         # Find and clicks items tab
-        while py.locateOnScreen(self.path('items'), grayscale=True, confidence=0.9) is None:
+        while py.locateOnScreen(self.path('items'), grayscale=True, confidence=self.threshold) is None:
             os.system('cls')
             print("Finding items tab...")
             time.sleep(self.delay)
-        itemscoords = py.locateCenterOnScreen(self.path('items'), grayscale=True, confidence=0.9)
+        itemscoords = py.locateCenterOnScreen(self.path('items'), grayscale=True, confidence=self.threshold)
         py.click(itemscoords)
 
         # Find and equips item
-        while py.locateOnScreen(self.path('sphere'), grayscale=True, confidence=0.9) is None:
+        while py.locateOnScreen(self.path('sphere'), grayscale=True, confidence=self.threshold) is None:
             os.system('cls')
             print("Finding item...")
             time.sleep(self.delay)
-        spherecoords = py.locateCenterOnScreen(self.path('sphere'), grayscale=True, confidence=0.9)
+        spherecoords = py.locateCenterOnScreen(self.path('sphere'), grayscale=True, confidence=self.threshold)
         py.click(spherecoords, clicks=2)
         
     def attack(self):
@@ -94,31 +95,31 @@ class BotAQ:
         print("Attacking...")
 
          # Find and clicks spells tab
-        while py.locateOnScreen(self.path('spells'), grayscale=True, confidence=0.9) is None:
+        while py.locateOnScreen(self.path('spells'), grayscale=True, confidence=self.threshold) is None:
             if self.check_death() == True:
                 break
 
             os.system('cls')
             print("Finding spells tab...")
             time.sleep(self.delay)
-        spellscoords = py.locateCenterOnScreen(self.path('spells'), grayscale=True, confidence=0.9)
+        spellscoords = py.locateCenterOnScreen(self.path('spells'), grayscale=True, confidence=self.threshold)
         py.click(spellscoords)
 
         # Find and clicks Destruction Burst
-        while py.locateOnScreen(self.path('db'), grayscale=True, confidence=0.9) is None:
+        while py.locateOnScreen(self.path('db'), grayscale=True, confidence=self.threshold) is None:
             if self.check_death() == True:
                 break
 
             os.system('cls')
             print("Finding spell...")
             time.sleep(self.delay)
-        dbcoords = py.locateCenterOnScreen(self.path('db'), grayscale=True, confidence=0.9)
+        dbcoords = py.locateCenterOnScreen(self.path('db'), grayscale=True, confidence=self.threshold)
         py.click(dbcoords, clicks=2)
 
     def check_death(self):
         os.system('cls')
         print("Finding vitality signals...")
-        if py.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=0.9):
+        if py.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold):
             return True
 
         else:
@@ -142,10 +143,13 @@ def main():
 
     while True:
         # Find and click on Am-Boss
-        while py.locateOnScreen(bot.path('amboss'), grayscale=True, confidence=0.9) is None:
+        while py.locateOnScreen(bot.path('amboss'), grayscale=True, confidence=bot.threshold) is None:
+            if py.locaterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold):
+                py.click(killedcoords)
             os.system('cls')
+            print("Finding Am-Boss...")
             time.sleep(bot.delay)
-        ambosscoords = py.locateCenterOnScreen(bot.path('amboss'), grayscale=True, confidence=0.9)
+        ambosscoords = py.locateCenterOnScreen(bot.path('amboss'), grayscale=True, confidence=bot.threshold)
         py.click(ambosscoords)
 
         if n == 0:
@@ -159,7 +163,7 @@ def main():
             print("Continuing to attack...")
             bot.attack()
 
-        killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=0.9)
+        killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
         py.click(killedcoords)
         
         n += 1
