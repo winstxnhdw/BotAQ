@@ -145,6 +145,7 @@ def main():
         # Find and click on Am-Boss
         while py.locateOnScreen(bot.path('amboss'), grayscale=True, confidence=bot.threshold) is None:
             if py.locaterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold):
+                killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
                 py.click(killedcoords)
             os.system('cls')
             print("Finding Am-Boss...")
