@@ -1,6 +1,8 @@
 import pyautogui as py
-import numpy as np
-import time, os
+import math as m
+import os
+
+from datetime import time, datetime
 class BotAQ:
 
     def __init__(self):
@@ -128,14 +130,24 @@ class BotAQ:
 def main():
 
     bot = BotAQ()
+    xp = 19600
+    totalxp = xp + (0.1 * xp)
+    t = -1
+
+    level = input("Adventurer Level (1 - 150)?: ")
+    if int(level) >= 1 and int(level) <= 150:
+        maxcycles = m.ceil(3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1 / totalxp)
+
+    else:
+        print("Incorrect input. Try again.\n")
+        main()
 
     prepare = input("Prepare (y/n)?: ")
-
     if prepare == 'y':
-        n = 0
+        n = -1
 
     elif prepare == 'n':
-        n = 1
+        n = 0
 
     else:
         print("Incorrect input. Try again.\n")
@@ -144,16 +156,16 @@ def main():
     while True:
         # Find and click on Am-Boss
         while py.locateOnScreen(bot.path('amboss'), grayscale=True, confidence=bot.threshold) is None:
-            if py.locateOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold):
-                killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
-                py.click(killedcoords)
+            if py.locateOnScreen(bot.path('levelled'), grayscale=True, confidence=bot.threshold):
+                levelledcoords = py.locateCenterOnScreen(bot.path('levelled'), grayscale=True, confidence=bot.threshold)
+                py.click(levelledcoords)
             os.system('cls')
             print("Finding Am-Boss...")
             time.sleep(bot.delay)
         ambosscoords = py.locateCenterOnScreen(bot.path('amboss'), grayscale=True, confidence=bot.threshold)
         py.click(ambosscoords)
 
-        if n == 0:
+        if n == -1:
             bot.set_loadout()
 
         bot.prepare()
@@ -167,7 +179,14 @@ def main():
         killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
         py.click(killedcoords)
         
+        if n >= maxcycles:
+            exit()
         n += 1
+
+        if t == -1:
+            if datetime.now >= time(hour=1):
+                n = 0
+                t += 1
 
 if __name__ == '__main__':
     main()
