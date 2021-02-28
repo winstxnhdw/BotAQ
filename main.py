@@ -90,7 +90,7 @@ class BotAQ:
         py.click(spherecoords, clicks=2)
         
     def attack(self):
-
+        os.system('cls')
         print("Attacking...")
 
          # Find and clicks spells tab
