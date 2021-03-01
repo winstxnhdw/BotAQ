@@ -136,6 +136,7 @@ def main():
     basexp = 19600
     cyclexp = basexp + (0.1 * basexp)
     lastxp = 0.0
+    x = 100 
     
     level = input("Adventurer Level (1 - 150)?: ")
     if int(level) >= 1 and int(level) <= 150:
@@ -190,7 +191,6 @@ def main():
 
             print ("\033[A                             \033[A")
             print("Finding Am-Boss...")
-            x = 100
             py.move(x, None)
             x += 10
             time.sleep(bot.delay)
@@ -212,15 +212,15 @@ def main():
 
         killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
         py.click(killedcoords)
+
+        if t == -1 and n > 0:
+            if dt.datetime.now().hour >= 1:
+                n = 0
+                t += 1
         
         if n >= maxcycles:
             exit()
         n += 1
-
-        if t == -1:
-            if dt.datetime.now().hour <= 1:
-                n = 0
-                t += 1
 
         os.system('cls')
         printProgressBar(n, maxcycles, prefix='Progress:', suffix='Complete', length=30)
@@ -231,7 +231,7 @@ def exit_handler(n, cyclexp, lastxp=0.0):
 
     print("Bot is shutting down...")
 
-    totalxp = n * cyclexp + lastxp
+    totalxp = (n * cyclexp) + lastxp
     data = {'lastxp': totalxp}
 
     with open('usr\\userdata.json', 'w') as outfile:
