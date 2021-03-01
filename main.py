@@ -171,7 +171,8 @@ def main():
             # When player finds Z-Tokens
             elif py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold):
                 killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
-                py.moveTo(0, 0)
+                py.moveTo(100, 100)
+                time.sleep(bot.delay)
                 py.click(killedcoords)
 
             print ("\033[A                             \033[A")
