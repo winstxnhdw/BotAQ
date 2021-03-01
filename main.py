@@ -151,6 +151,10 @@ def main():
         pass
 
     elif clrdata == 'n':
+        with open('usr\\userdata.json', 'w') as outfile:
+            data = {'lastxp': 0}
+            json.dump(data, outfile, indent=4)
+
         with open('usr\\userdata.json') as json_file:
             lastxp = json.load(json_file)['lastxp']
             maxcycles = m.ceil(((3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1) - lastxp) / cyclexp)
@@ -225,12 +229,13 @@ def main():
         os.system('cls')
         printProgressBar(n, maxcycles, prefix='Progress:', suffix='Complete', length=30)
 
-        atexit.register(exit_handler, n, cyclexp, lastxp)
+    atexit.unregister(exit_handler)
+    atexit.register(exit_handler, n, cyclexp, lastxp)
 
 def exit_handler(n, cyclexp, lastxp=0):
 
     print("Bot is shutting down...")
-
+    print(n)
     totalxp = (n * cyclexp) + lastxp
     data = {'lastxp': totalxp}
 
