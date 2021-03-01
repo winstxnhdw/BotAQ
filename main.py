@@ -135,6 +135,7 @@ def main():
     t = -1
     basexp = 19600
     cyclexp = basexp + (0.1 * basexp)
+    lastxp = 0.0
     
     level = input("Adventurer Level (1 - 150)?: ")
     if int(level) >= 1 and int(level) <= 150:
@@ -151,7 +152,7 @@ def main():
     elif clrdata == 'n':
         with open('usr\\userdata.json') as json_file:
             lastxp = json.load(json_file)['lastxp']
-            maxcycles = m.ceil((3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1) - lastxp / cyclexp)
+            maxcycles = m.ceil(((3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1) - lastxp) / cyclexp)
 
     else:
         print("Incorrect input. Try again.\n\n")
@@ -169,7 +170,8 @@ def main():
         main()
 
     os.system('cls')
-    printProgressBar(0, maxcycles, prefix='Progress:', suffix='Complete', length=30)
+    n = lastxp / cyclexp
+    printProgressBar(n, maxcycles, prefix='Progress:', suffix='Complete', length=30)
 
     while True:
         # Find and click on Am-Boss
@@ -221,13 +223,13 @@ def main():
         os.system('cls')
         printProgressBar(n, maxcycles, prefix='Progress:', suffix='Complete', length=30)
 
-        atexit.register(exit_handler, n, cyclexp)
+        atexit.register(exit_handler, n, cyclexp, lastxp)
 
-def exit_handler(n, cyclexp):
+def exit_handler(n, cyclexp, lastxp=0.0):
 
     print("Bot is shutting down...")
 
-    totalxp = n * cyclexp
+    totalxp = n * cyclexp + lastxp
     data = {'lastxp': totalxp}
 
     with open('usr\\userdata.json', 'w') as outfile:
