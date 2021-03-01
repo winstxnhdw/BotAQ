@@ -135,12 +135,12 @@ def main():
     t = -1
     basexp = 19600
     cyclexp = basexp + (0.1 * basexp)
-    lastxp = 0.0
+    lastxp = 0
     x = 100 
     
     level = input("Adventurer Level (1 - 150)?: ")
     if int(level) >= 1 and int(level) <= 150:
-        maxcycles = m.ceil(3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1 / cyclexp)
+        maxcycles = m.ceil((3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1) / cyclexp)
 
     else:
         print("Incorrect input. Try again.\n\n")
@@ -171,7 +171,7 @@ def main():
         main()
 
     os.system('cls')
-    n = lastxp / cyclexp
+    n = lastxp / cyclexp + n
     printProgressBar(n, maxcycles, prefix='Progress:', suffix='Complete', length=30)
 
     while True:
@@ -182,7 +182,7 @@ def main():
                 levelledcoords = py.locateCenterOnScreen(bot.path('levelled'), grayscale=True, confidence=bot.threshold)
                 py.click(levelledcoords)
                 newlevel = int(level) + 1 + newlevel
-                maxcycles = m.ceil(3 * 1.055**newlevel + 24 + 3 * 1.055**(newlevel**1.085) * 200 * 1.1 / cyclexp)
+                maxcycles = m.ceil((3 * 1.055**newlevel + 24 + 3 * 1.055**(newlevel**1.085) * 200 * 1.1) / cyclexp)
 
             # When player finds Z-Tokens
             elif py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold):
@@ -227,7 +227,7 @@ def main():
 
         atexit.register(exit_handler, n, cyclexp, lastxp)
 
-def exit_handler(n, cyclexp, lastxp=0.0):
+def exit_handler(n, cyclexp, lastxp=0):
 
     print("Bot is shutting down...")
 
