@@ -170,7 +170,7 @@ def main():
             # When player finds Z-Tokens
             elif py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold):
                 killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
-                py.click(killedcoords)
+                py.click(killedcoords, clicks=2)
 
             print ("\033[A                             \033[A")
             print("Finding Am-Boss...")
