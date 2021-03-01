@@ -154,7 +154,7 @@ def main():
     else:
         print("Incorrect input. Try again.\n")
         main()
-        
+
     os.system('cls')
     printProgressBar(0, maxcycles, prefix='Progress:', suffix='Complete', length=50)
 
@@ -171,7 +171,8 @@ def main():
             # When player finds Z-Tokens
             elif py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold):
                 killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
-                py.click(killedcoords, clicks=2)
+                py.moveTo(0, 0)
+                py.click(killedcoords)
 
             print ("\033[A                             \033[A")
             print("Finding Am-Boss...")
