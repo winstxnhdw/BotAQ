@@ -239,6 +239,6 @@ def exit_handler(n, cyclexp, lastxp=0):
 
 if __name__ == '__main__':
     if not os.path.exists('usr'):
-        os.makedirs('usr')
+        os.makedirs('usr')
 
     main()
