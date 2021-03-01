@@ -163,6 +163,8 @@ def main():
             if py.locateOnScreen(bot.path('levelled'), grayscale=True, confidence=bot.threshold):
                 levelledcoords = py.locateCenterOnScreen(bot.path('levelled'), grayscale=True, confidence=bot.threshold)
                 py.click(levelledcoords)
+                killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
+                py.click(killedcoords)
                 level += 1
                 maxcycles = m.ceil(3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1 / totalxp)
 
