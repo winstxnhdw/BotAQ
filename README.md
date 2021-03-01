@@ -17,7 +17,7 @@ The preparationary phase is only engaged once per battle. This is used to cast s
 An attack is performed on Am-Boss and checked if Am-Boss is killed for every attack. If Am-Boss is not killed, the function is repeated.
 
 ### Repeat
-If Am-Boss is killed, the steps are repeated without the setting the loadout again. This cycle eventually stops when the maximum daily limit of fighting Am-Boss is reached.
+If Am-Boss is killed, the steps are repeated without the setting the loadout again. This cycle eventually stops when the maximum daily limit of fighting Am-Boss is reached. Player has the choice whether to keep last exp gained
 
 ## Future Works
-There may be plans to use a Optical Character Recognition (OCR) engine or deep-learning model to recognise certain texts and improve the versatility of this project.
+There may be plans to use a Optical Character Recognition (OCR) engine or deep-learning model to recognise certain texts and improve the versatility of this project. There are plans to switch to the game's timezone for easier saving of user data.

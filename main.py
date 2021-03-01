@@ -190,7 +190,7 @@ def main():
 
             print ("\033[A                             \033[A")
             print("Finding Am-Boss...")
-            py.move(1000, None)
+            py.move(50, None)
             time.sleep(bot.delay)
         ambosscoords = py.locateCenterOnScreen(bot.path('amboss'), grayscale=True, confidence=bot.threshold)
         py.click(ambosscoords)
