@@ -176,7 +176,12 @@ def main():
 
     os.system('cls')
     n = lastxp / cyclexp + n
-    printProgressBar(n, maxcycles, prefix='Progress:', suffix='Complete', length=30)
+    
+    if n == -1
+        printProgressBar(0, maxcycles, prefix='Progress:', suffix='Complete', length=30)
+
+    else: 
+        printProgressBar(n, maxcycles, prefix='Progress:', suffix='Complete', length=30)
 
     while True:
         # Find and click on Am-Boss
