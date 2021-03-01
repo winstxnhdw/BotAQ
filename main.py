@@ -160,13 +160,17 @@ def main():
     while True:
         # Find and click on Am-Boss
         while py.locateOnScreen(bot.path('amboss'), grayscale=True, confidence=bot.threshold) is None:
+            # When player levels up
             if py.locateOnScreen(bot.path('levelled'), grayscale=True, confidence=bot.threshold):
                 levelledcoords = py.locateCenterOnScreen(bot.path('levelled'), grayscale=True, confidence=bot.threshold)
                 py.click(levelledcoords)
-                killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
-                py.click(killedcoords)
                 level += 1
                 maxcycles = m.ceil(3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1 / totalxp)
+
+            # When player finds Z-Tokens
+            elif py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold):
+                killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
+                py.click(killedcoords)
 
             print ("\033[A                             \033[A")
             print("Finding Am-Boss...")
