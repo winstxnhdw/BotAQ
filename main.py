@@ -238,4 +238,10 @@ def exit_handler(n, cyclexp, lastxp=0):
         json.dump(data, outfile, indent=4)
 
 if __name__ == '__main__':
+    try:
+        os.makedirs('usr')
+
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
     main()
