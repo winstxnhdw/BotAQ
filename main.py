@@ -1,9 +1,9 @@
 import pyautogui as py
 import math as m
 import datetime as dt
-import os, time
+import os, time, atexit, json
 
-from termbar import *
+from libs.termbar import *
 class BotAQ:
 
     def __init__(self):
@@ -208,5 +208,10 @@ def main():
         os.system('cls')
         printProgressBar(n, maxcycles, prefix='Progress:', suffix='Complete', length=50)
 
+def exit_handler():
+
+    print("Bot is shutting down...")
+
 if __name__ == '__main__':
+    atexit.register(exit_handler)
     main()
