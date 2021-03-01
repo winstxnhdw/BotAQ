@@ -154,7 +154,8 @@ def main():
     else:
         print("Incorrect input. Try again.\n")
         main()
-
+        
+    os.system('cls')
     printProgressBar(0, maxcycles, prefix='Progress:', suffix='Complete', length=50)
 
     while True:
