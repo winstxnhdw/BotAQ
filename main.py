@@ -7,9 +7,9 @@ from libs.termbar import *
 class BotAQ:
 
     def __init__(self):
-
-        print("Initialising bot...")
         
+        print("Initialising bot...")
+
         self.delay = 0.4
         self.threshold = 0.8
 
@@ -131,17 +131,30 @@ class BotAQ:
 def main():
 
     bot = BotAQ()
-    xp = 19600
-    totalxp = xp + (0.1 * xp)
+    newlevel = 0
     t = -1
+    basexp = 19600
+    cyclexp = basexp + (0.1 * basexp)
     
-    os.system('cls')
     level = input("Adventurer Level (1 - 150)?: ")
     if int(level) >= 1 and int(level) <= 150:
-        maxcycles = m.ceil(3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1 / totalxp)
+        maxcycles = m.ceil(3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1 / cyclexp)
 
     else:
-        print("Incorrect input. Try again.\n")
+        print("Incorrect input. Try again.\n\n")
+        main()
+
+    clrdata = input("Do you want to clear your user data (y/n)?: ")
+    if clrdata == 'y':
+        pass
+
+    elif clrdata == 'n':
+        with open('usr\\userdata.json') as json_file:
+            lastxp = json.load(json_file)['lastxp']
+            maxcycles = m.ceil((3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1) - lastxp / cyclexp)
+
+    else:
+        print("Incorrect input. Try again.\n\n")
         main()
 
     prepare = input("Prepare (y/n)?: ")
@@ -152,11 +165,11 @@ def main():
         n = 0
 
     else:
-        print("Incorrect input. Try again.\n")
+        print("Incorrect input. Try again.\n\n")
         main()
 
     os.system('cls')
-    printProgressBar(0, maxcycles, prefix='Progress:', suffix='Complete', length=50)
+    printProgressBar(0, maxcycles, prefix='Progress:', suffix='Complete', length=30)
 
     while True:
         # Find and click on Am-Boss
@@ -165,8 +178,8 @@ def main():
             if py.locateOnScreen(bot.path('levelled'), grayscale=True, confidence=bot.threshold):
                 levelledcoords = py.locateCenterOnScreen(bot.path('levelled'), grayscale=True, confidence=bot.threshold)
                 py.click(levelledcoords)
-                level += 1
-                maxcycles = m.ceil(3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1 / totalxp)
+                newlevel = int(level) + 1 + newlevel
+                maxcycles = m.ceil(3 * 1.055**newlevel + 24 + 3 * 1.055**(newlevel**1.085) * 200 * 1.1 / cyclexp)
 
             # When player finds Z-Tokens
             elif py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold):
@@ -201,17 +214,24 @@ def main():
         n += 1
 
         if t == -1:
-            if dt.datetime.now().hour >= 1:
+            if dt.datetime.now().hour <= 1:
                 n = 0
                 t += 1
 
         os.system('cls')
-        printProgressBar(n, maxcycles, prefix='Progress:', suffix='Complete', length=50)
+        printProgressBar(n, maxcycles, prefix='Progress:', suffix='Complete', length=30)
 
-def exit_handler():
+        atexit.register(exit_handler, n, cyclexp)
+
+def exit_handler(n, cyclexp):
 
     print("Bot is shutting down...")
 
+    totalxp = n * cyclexp
+    data = {'lastxp': totalxp}
+
+    with open('usr\\userdata.json', 'w') as outfile:
+        json.dump(data, outfile, indent=4)
+
 if __name__ == '__main__':
-    atexit.register(exit_handler)
     main()
