@@ -1,8 +1,9 @@
 import pyautogui as py
 import math as m
-import os
+import datetime as dt
+import os, time
 
-from datetime import time, datetime
+from termbar import *
 class BotAQ:
 
     def __init__(self):
@@ -28,7 +29,7 @@ class BotAQ:
 
         # Find and clicks skills tab
         while py.locateOnScreen(self.path('skills'), grayscale=True, confidence=self.threshold) is None:
-            os.system('cls')
+            print ("\033[A                             \033[A")
             print("Finding skills tab...")
             time.sleep(self.delay)
         skillscoords = py.locateCenterOnScreen(self.path('skills'), grayscale=True, confidence=self.threshold)
@@ -36,7 +37,7 @@ class BotAQ:
 
         # Find and clicks imbue buff
         while py.locateOnScreen(self.path('imbue'), grayscale=True, confidence=self.threshold) is None:
-            os.system('cls')
+            print ("\033[A                             \033[A")
             print("Finding imbue...")
             time.sleep(self.delay)
         imbuecoords = py.locateCenterOnScreen(self.path('imbue'), grayscale=True, confidence=self.threshold)
@@ -44,7 +45,7 @@ class BotAQ:
         
         # Find and clicks menu to exit skills
         while py.locateOnScreen(self.path('menu'), grayscale=True, confidence=self.threshold) is None:
-            os.system('cls')
+            print ("\033[A                             \033[A")
             print("Finding menu...")
             time.sleep(self.delay)
         menucoords = py.locateCenterOnScreen(self.path('menu'), grayscale=True, confidence=self.threshold)
@@ -52,7 +53,7 @@ class BotAQ:
 
         # Find and enables shield ability
         while py.locateOnScreen(self.path('poseidon'), grayscale=True, confidence=self.threshold) is None:
-            os.system('cls')
+            print ("\033[A                             \033[A")
             print("Finding shield...")
             time.sleep(self.delay)
         poseidoncoords = py.locateCenterOnScreen(self.path('poseidon'), grayscale=True, confidence=self.threshold)
@@ -60,7 +61,7 @@ class BotAQ:
 
         # Find and clicks pets tab
         while py.locateOnScreen(self.path('pets'), grayscale=True, confidence=self.threshold) is None:
-            os.system('cls')
+            print ("\033[A                             \033[A")
             print("Finding pets tab...")
             time.sleep(self.delay)
         petscoords = py.locateCenterOnScreen(self.path('pets'), grayscale=True, confidence=self.threshold)
@@ -68,7 +69,7 @@ class BotAQ:
 
         # Find and unequips item
         while py.locateOnScreen(self.path('hide'), grayscale=True, confidence=self.threshold) is None:
-            os.system('cls')
+            print ("\033[A                             \033[A")
             print("Finding pet to hide...")
             time.sleep(self.delay)
         hidecoords = py.locateCenterOnScreen(self.path('hide'), grayscale=True, confidence=self.threshold)
@@ -78,7 +79,7 @@ class BotAQ:
 
         # Find and clicks items tab
         while py.locateOnScreen(self.path('items'), grayscale=True, confidence=self.threshold) is None:
-            os.system('cls')
+            print ("\033[A                             \033[A")
             print("Finding items tab...")
             time.sleep(self.delay)
         itemscoords = py.locateCenterOnScreen(self.path('items'), grayscale=True, confidence=self.threshold)
@@ -86,14 +87,14 @@ class BotAQ:
 
         # Find and equips item
         while py.locateOnScreen(self.path('sphere'), grayscale=True, confidence=self.threshold) is None:
-            os.system('cls')
+            print ("\033[A                             \033[A")
             print("Finding item...")
             time.sleep(self.delay)
         spherecoords = py.locateCenterOnScreen(self.path('sphere'), grayscale=True, confidence=self.threshold)
         py.click(spherecoords, clicks=2)
         
     def attack(self):
-        os.system('cls')
+        print ("\033[A                             \033[A")
         print("Attacking...")
 
          # Find and clicks spells tab
@@ -101,7 +102,7 @@ class BotAQ:
             if self.check_death() == True:
                 break
 
-            os.system('cls')
+            print ("\033[A                             \033[A")
             print("Finding spells tab...")
             time.sleep(self.delay)
         spellscoords = py.locateCenterOnScreen(self.path('spells'), grayscale=True, confidence=self.threshold)
@@ -112,14 +113,14 @@ class BotAQ:
             if self.check_death() == True:
                 break
 
-            os.system('cls')
+            print ("\033[A                             \033[A")
             print("Finding spell...")
             time.sleep(self.delay)
         dbcoords = py.locateCenterOnScreen(self.path('db'), grayscale=True, confidence=self.threshold)
         py.click(dbcoords, clicks=2)
 
     def check_death(self):
-        os.system('cls')
+        print ("\033[A                             \033[A")
         print("Finding vitality signals...")
         if py.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold):
             return True
@@ -133,7 +134,8 @@ def main():
     xp = 19600
     totalxp = xp + (0.1 * xp)
     t = -1
-
+    
+    os.system('cls')
     level = input("Adventurer Level (1 - 150)?: ")
     if int(level) >= 1 and int(level) <= 150:
         maxcycles = m.ceil(3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1 / totalxp)
@@ -153,13 +155,18 @@ def main():
         print("Incorrect input. Try again.\n")
         main()
 
+    printProgressBar(0, maxcycles, prefix='Progress:', suffix='Complete', length=50)
+
     while True:
         # Find and click on Am-Boss
         while py.locateOnScreen(bot.path('amboss'), grayscale=True, confidence=bot.threshold) is None:
             if py.locateOnScreen(bot.path('levelled'), grayscale=True, confidence=bot.threshold):
                 levelledcoords = py.locateCenterOnScreen(bot.path('levelled'), grayscale=True, confidence=bot.threshold)
                 py.click(levelledcoords)
-            os.system('cls')
+                level += 1
+                maxcycles = m.ceil(3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1 / totalxp)
+
+            print ("\033[A                             \033[A")
             print("Finding Am-Boss...")
             time.sleep(bot.delay)
         ambosscoords = py.locateCenterOnScreen(bot.path('amboss'), grayscale=True, confidence=bot.threshold)
@@ -167,14 +174,16 @@ def main():
 
         if n == -1:
             bot.set_loadout()
+            n = 0
 
         bot.prepare()
 
         bot.attack()
         while bot.check_death() is False:
-            os.system('cls')
+            print ("\033[A                             \033[A")
             print("Continuing to attack...")
             bot.attack()
+            time.sleep(bot.delay)
 
         killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
         py.click(killedcoords)
@@ -184,9 +193,12 @@ def main():
         n += 1
 
         if t == -1:
-            if datetime.now >= time(hour=1):
+            if dt.datetime.now().hour >= 1:
                 n = 0
                 t += 1
+
+        os.system('cls')
+        printProgressBar(n, maxcycles, prefix='Progress:', suffix='Complete', length=50)
 
 if __name__ == '__main__':
     main()
