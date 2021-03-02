@@ -44,9 +44,9 @@ class BotAQ:
 
         return path
 
-    def calc_cycles(self, level, cyclexp, lastxp=0):
+    def calc_cycles(self, level, cyclexp):
 
-        cycles = m.ceil(((990*(1.055**level + 8 + 1.055**(level**1.085))) - lastxp)/cyclexp)
+        cycles = m.ceil((990*(1.055**level + 8 + 1.055**(level**1.085))) / cyclexp)
         return cycles
 
     def set_loadout(self):
@@ -186,6 +186,7 @@ def main(args):
         t = -1
         cyclexp = basexp + m.floor(0.1 * basexp)
         lastxp = 0
+        prevcycles = 0
         x = 100 
         
         level = input("Adventurer Level (1 - 150)?: ")
@@ -210,7 +211,7 @@ def main(args):
             else:
                 with open('data\\userdata.json') as json_file:
                     lastxp = json.load(json_file)['lastxp']
-                    maxcycles = bot.calc_cycles(level, cyclexp, lastxp)
+                    prevcycles = lastxp / cyclexp
 
         else:
             print("Incorrect input. Try again.\n\n")
@@ -228,12 +229,7 @@ def main(args):
             main(args)
 
         os.system('cls')
-        if n == -1:
-            printProgressBar(0, maxcycles, prefix='Progress:', length=30)
-
-        else:
-            firstprogress = lastxp / cyclexp
-            printProgressBar(firstprogress, maxcycles, prefix='Progress:', length=30)
+        printProgressBar(prevcycles, maxcycles, prefix='Progress:', length=30)
 
         while True:
             # Find and click on the boss
@@ -252,8 +248,9 @@ def main(args):
                 bot.set_loadout()
                 n = 0
 
-            bot.prepare()
+            n = prevcycles
 
+            bot.prepare()
             bot.attack()
             while bot.check_death() is False:
                 print ("\033[A                             \033[A")
@@ -265,7 +262,7 @@ def main(args):
             py.click(killedcoords)
 
             if t == -1 and n > 0:
-                if dt.datetime.now().hour >= 1:
+                if dt.datetime.now().hour == 1 and dt.datetime.now().minute == 0:
                     n = 0
                     t += 1
             
