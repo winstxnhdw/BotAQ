@@ -44,6 +44,11 @@ class BotAQ:
 
         return path
 
+    def calc_cycles(self, level, cyclexp, lastxp=0):
+
+        cycles = m.ceil(((990*(1.055**level + 8 + 1.055**(level**1.085))) - lastxp)/cyclexp)
+        return cycles
+
     def set_loadout(self):
         
         # Activate Imbue -> Enable Shield -> Equip Item -> Unequip Pet
@@ -160,7 +165,7 @@ class BotAQ:
             levelledcoords = py.locateCenterOnScreen(self.path('levelled'), grayscale=True, confidence=self.threshold)
             py.click(levelledcoords)
             level = level + 1
-            maxcycles = m.ceil((3*1.055**level + 24 + 3*1.055**(level**1.085)*200*1.1) / cyclexp)
+            maxcycles = self.calc_cycles(level, cyclexp)
 
         # When player finds Z-Tokens
         elif py.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold):
@@ -185,8 +190,8 @@ def main(args):
         
         level = input("Adventurer Level (1 - 150)?: ")
         if int(level) >= 1 and int(level) <= 150:
-            maxcycles = m.ceil((3*1.055**int(level) + 24 + 3*1.055**(int(level)**1.085)*200*1.1) / cyclexp)
             level = int(level)
+            maxcycles = bot.calc_cycles(level, cyclexp)
 
         else:
             print("Incorrect input. Try again.\n\n")
@@ -205,7 +210,7 @@ def main(args):
             else:
                 with open('data\\userdata.json') as json_file:
                     lastxp = json.load(json_file)['lastxp']
-                    maxcycles = m.ceil(((3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1) - lastxp) / cyclexp)
+                    maxcycles = bot.calc_cycles(level, cyclexp, lastxp)
 
         else:
             print("Incorrect input. Try again.\n\n")
