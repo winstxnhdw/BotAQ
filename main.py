@@ -197,13 +197,15 @@ def main(args):
             pass
 
         elif clrdata == 'n':
-            with open('data\\userdata.json', 'w') as outfile:
-                data = {'lastxp': 0}
-                json.dump(data, outfile, indent=4)
-
-            with open('data\\userdata.json') as json_file:
-                lastxp = json.load(json_file)['lastxp']
-                maxcycles = m.ceil(((3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1) - lastxp) / cyclexp)
+            if not os.path.exists("data\\userdata.json"):
+                with open('data\\userdata.json', 'w') as outfile:
+                    data = {'lastxp': 0}
+                    json.dump(data, outfile, indent=4)
+            
+            else:
+                with open('data\\userdata.json') as json_file:
+                    lastxp = json.load(json_file)['lastxp']
+                    maxcycles = m.ceil(((3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1) - lastxp) / cyclexp)
 
         else:
             print("Incorrect input. Try again.\n\n")
