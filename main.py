@@ -273,7 +273,7 @@ def main(args):
             e.cyclexp = cyclexp
             e.lastxp = lastxp
 
-        atexit.register(exit_handler)
+        atexit.register(e.exit_handler)
         
     except KeyboardInterrupt:
         atexit.register(e.exit_handler)
