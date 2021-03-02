@@ -1,9 +1,22 @@
+import os
+import time
+import atexit
+import json
+import argparse
+
 import pyautogui as py
 import math as m
 import datetime as dt
-import os, time, atexit, json
 
 from libs.termbar import *
+
+class Exit:
+    
+    def __init__(self):
+
+        self.n = 0
+        self.cyclexp = 0
+        self.lastxp = 0
 class BotAQ:
 
     def __init__(self):
@@ -11,7 +24,7 @@ class BotAQ:
         print("Initialising bot...")
 
         self.delay = 0.4
-        self.threshold = 0.8
+        self.threshold = 0.7
 
     def path(self, name):
 
@@ -94,6 +107,7 @@ class BotAQ:
         py.click(spherecoords, clicks=2)
         
     def attack(self):
+
         print ("\033[A                             \033[A")
         print("Attacking...")
 
@@ -120,6 +134,7 @@ class BotAQ:
         py.click(dbcoords, clicks=2)
 
     def check_death(self):
+
         print ("\033[A                             \033[A")
         print("Finding vitality signals...")
         if py.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold):
@@ -128,40 +143,60 @@ class BotAQ:
         else:
             return False
 
-def main():
+    def exceptions(self, level, cyclexp, maxcycles):
+
+        # When player levels up
+        if py.locateOnScreen(self.path('levelled'), grayscale=True, confidence=self.threshold):
+            levelledcoords = py.locateCenterOnScreen(self.path('levelled'), grayscale=True, confidence=self.threshold)
+            py.click(levelledcoords)
+            level = level + 1
+            maxcycles = m.ceil((3*1.055**level + 24 + 3*1.055**(level**1.085)*200*1.1) / cyclexp)
+
+        # When player finds Z-Tokens
+        elif py.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold):
+            killedcoords = py.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold)
+            py.click(killedcoords)
+
+        return maxcycles, level
+
+def main(args):
 
     bot = BotAQ()
-    newlevel = 0
+
+    with open('data\\bosses.json') as json_file:
+        basexp = json.load(json_file)[args.boss]
+
+    e = Exit()
     t = -1
-    basexp = 19600
-    cyclexp = basexp + (0.1 * basexp)
+    cyclexp = basexp + m.floor(0.1 * basexp)
     lastxp = 0
     x = 100 
     
     level = input("Adventurer Level (1 - 150)?: ")
     if int(level) >= 1 and int(level) <= 150:
-        maxcycles = m.ceil((3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1) / cyclexp)
+        maxcycles = m.ceil((3*1.055**int(level) + 24 + 3*1.055**(int(level)**1.085)*200*1.1) / cyclexp)
+        level = int(level)
 
     else:
         print("Incorrect input. Try again.\n\n")
-        main()
+        main(args)
 
     clrdata = input("Do you want to clear your user data (y/n)?: ")
     if clrdata == 'y':
         pass
 
     elif clrdata == 'n':
-        with open('usr\\userdata.json', 'w') as outfile:
+        with open('data\\userdata.json', 'w') as outfile:
             data = {'lastxp': 0}
             json.dump(data, outfile, indent=4)
 
-        with open('usr\\userdata.json') as json_file:
+        with open('data\\userdata.json') as json_file:
             lastxp = json.load(json_file)['lastxp']
             maxcycles = m.ceil(((3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1) - lastxp) / cyclexp)
 
     else:
         print("Incorrect input. Try again.\n\n")
-        main()
+        main(args)
 
     prepare = input("Prepare (y/n)?: ")
     if prepare == 'y':
@@ -172,7 +207,7 @@ def main():
 
     else:
         print("Incorrect input. Try again.\n\n")
-        main()
+        main(args)
 
     os.system('cls')
     if n == -1:
@@ -183,27 +218,17 @@ def main():
         printProgressBar(firstprogress, maxcycles, prefix='Progress:', suffix='Complete', length=30)
 
     while True:
-        # Find and click on Am-Boss
-        while py.locateOnScreen(bot.path('amboss'), grayscale=True, confidence=bot.threshold) is None:
-            # When player levels up
-            if py.locateOnScreen(bot.path('levelled'), grayscale=True, confidence=bot.threshold):
-                levelledcoords = py.locateCenterOnScreen(bot.path('levelled'), grayscale=True, confidence=bot.threshold)
-                py.click(levelledcoords)
-                newlevel = int(level) + 1 + newlevel
-                maxcycles = m.ceil((3 * 1.055**newlevel + 24 + 3 * 1.055**(newlevel**1.085) * 200 * 1.1) / cyclexp)
-
-            # When player finds Z-Tokens
-            elif py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold):
-                killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
-                py.click(killedcoords)
+        # Find and click on the boss
+        while py.locateOnScreen(bot.path(args.boss), grayscale=True, confidence=bot.threshold) is None:
+            maxcycles, level = bot.exceptions(level, cyclexp, maxcycles)
 
             print ("\033[A                             \033[A")
-            print("Finding Am-Boss...")
+            print("Finding boss...")
             py.move(x, None)
             x += 10
             time.sleep(bot.delay)
-        ambosscoords = py.locateCenterOnScreen(bot.path('amboss'), grayscale=True, confidence=bot.threshold)
-        py.click(ambosscoords)
+        bosscoords = py.locateCenterOnScreen(bot.path(args.boss), grayscale=True, confidence=bot.threshold)
+        py.click(bosscoords)
 
         if n == -1:
             bot.set_loadout()
@@ -233,21 +258,32 @@ def main():
         os.system('cls')
         printProgressBar(n, maxcycles, prefix='Progress:', suffix='Complete', length=30)
 
-    atexit.unregister(exit_handler)
-    atexit.register(exit_handler, n, cyclexp, lastxp)
+        e.n = n
+        e.cyclexp = cyclexp
+        e.lastxp = lastxp
 
-def exit_handler(n, cyclexp, lastxp=0):
+    atexit.register(exit_handler)
+
+def parse_args():
+
+    parser = argparse.ArgumentParser(description='Finds the name of the boss to attack')
+    parser.add_argument('-b', '--boss', type=str, metavar='', required=True, help='Name of boss to attack')
+
+    return parser.parse_known_args()
+
+def exit_handler():
 
     print("Bot is shutting down...")
-    print(n)
-    totalxp = (n * cyclexp) + lastxp
+    e = Exit()
+    totalxp = (e.n * e.cyclexp) + e.lastxp
     data = {'lastxp': totalxp}
 
-    with open('usr\\userdata.json', 'w') as outfile:
+    with open('data\\userdata.json', 'w') as outfile:
         json.dump(data, outfile, indent=4)
 
 if __name__ == '__main__':
-    if not os.path.exists('usr'):
-        os.makedirs('usr')
-
-    main()
+    args, _ = parse_args()
+    try:
+        main(args)
+    except KeyboardInterrupt:
+        atexit.register(exit_handler)

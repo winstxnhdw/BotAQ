@@ -1,6 +1,16 @@
 # BotAQ
 BotAQ is a bot made to grind Am-Boss in Adventure Quest. It utilises the PyAutoGUI library to simulate human input and perform template matching. Unfortunately, this was not made with versatility in mind, as it requires the player to reach certain specific conditions within the game. 
 
+## Usage
+1. `pip install pyautogui`
+
+2. `python main.py -b <boss-name>`
+
+e.g. 
+```
+python main.py -b amboss
+```
+
 ## How it works
 BotAQ is based on five fundamental steps.
 
