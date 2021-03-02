@@ -262,7 +262,7 @@ def main(args):
             py.click(killedcoords)
 
             if t == -1 and n > 0:
-                if dt.datetime.now().hour == 1 and dt.datetime.now().minute == 0:
+                if dt.datetime.now().hour == 13 and dt.datetime.now().minute == 0:
                     n = 0
                     t += 1
             
