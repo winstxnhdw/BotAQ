@@ -18,6 +18,15 @@ class Exit:
         self.cyclexp = 0
         self.lastxp = 0
 
+    def exit_handler(self):
+
+        print("Bot is shutting down...")
+        totalxp = (self.n * self.cyclexp) + self.lastxp
+        data = {'lastxp': totalxp}
+
+        with open('data\\userdata.json', 'w') as outfile:
+            json.dump(data, outfile, indent=4)
+
 class BotAQ:
 
     def __init__(self):
@@ -275,16 +284,6 @@ def parse_args():
     parser.add_argument('-b', '--boss', type=str, metavar='', required=True, help='Name of boss to attack')
 
     return parser.parse_known_args()
-
-def exit_handler():
-
-    print("Bot is shutting down...")
-    e = Exit()
-    totalxp = (e.n * e.cyclexp) + e.lastxp
-    data = {'lastxp': totalxp}
-
-    with open('data\\userdata.json', 'w') as outfile:
-        json.dump(data, outfile, indent=4)
 
 if __name__ == '__main__':
     args, _ = parse_args()
