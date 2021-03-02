@@ -229,11 +229,11 @@ def main(args):
 
         os.system('cls')
         if n == -1:
-            printProgressBar(0, maxcycles, prefix='Progress:', suffix='Complete', length=30)
+            printProgressBar(0, maxcycles, prefix='Progress:', length=30)
 
         else:
             firstprogress = lastxp / cyclexp
-            printProgressBar(firstprogress, maxcycles, prefix='Progress:', suffix='Complete', length=30)
+            printProgressBar(firstprogress, maxcycles, prefix='Progress:', length=30)
 
         while True:
             # Find and click on the boss
@@ -274,7 +274,7 @@ def main(args):
             n += 1
 
             os.system('cls')
-            printProgressBar(n, maxcycles, prefix='Progress:', suffix='Complete', length=30)
+            printProgressBar(n, maxcycles, prefix='Progress:', length=30)
 
             e.n = n
             e.cyclexp = cyclexp
