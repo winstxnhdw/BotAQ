@@ -17,6 +17,7 @@ class Exit:
         self.n = 0
         self.cyclexp = 0
         self.lastxp = 0
+
 class BotAQ:
 
     def __init__(self):
@@ -161,108 +162,112 @@ class BotAQ:
 
 def main(args):
 
-    bot = BotAQ()
+    try:
+        bot = BotAQ()
 
-    with open('data\\bosses.json') as json_file:
-        basexp = json.load(json_file)[args.boss]
+        with open('data\\bosses.json') as json_file:
+            basexp = json.load(json_file)[args.boss]
 
-    e = Exit()
-    t = -1
-    cyclexp = basexp + m.floor(0.1 * basexp)
-    lastxp = 0
-    x = 100 
-    
-    level = input("Adventurer Level (1 - 150)?: ")
-    if int(level) >= 1 and int(level) <= 150:
-        maxcycles = m.ceil((3*1.055**int(level) + 24 + 3*1.055**(int(level)**1.085)*200*1.1) / cyclexp)
-        level = int(level)
+        e = Exit()
+        t = -1
+        cyclexp = basexp + m.floor(0.1 * basexp)
+        lastxp = 0
+        x = 100 
+        
+        level = input("Adventurer Level (1 - 150)?: ")
+        if int(level) >= 1 and int(level) <= 150:
+            maxcycles = m.ceil((3*1.055**int(level) + 24 + 3*1.055**(int(level)**1.085)*200*1.1) / cyclexp)
+            level = int(level)
 
-    else:
-        print("Incorrect input. Try again.\n\n")
-        main(args)
+        else:
+            print("Incorrect input. Try again.\n\n")
+            main(args)
 
-    clrdata = input("Do you want to clear your user data (y/n)?: ")
-    if clrdata == 'y':
-        pass
+        clrdata = input("Do you want to clear your user data (y/n)?: ")
+        if clrdata == 'y':
+            pass
 
-    elif clrdata == 'n':
-        with open('data\\userdata.json', 'w') as outfile:
-            data = {'lastxp': 0}
-            json.dump(data, outfile, indent=4)
+        elif clrdata == 'n':
+            with open('data\\userdata.json', 'w') as outfile:
+                data = {'lastxp': 0}
+                json.dump(data, outfile, indent=4)
 
-        with open('data\\userdata.json') as json_file:
-            lastxp = json.load(json_file)['lastxp']
-            maxcycles = m.ceil(((3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1) - lastxp) / cyclexp)
+            with open('data\\userdata.json') as json_file:
+                lastxp = json.load(json_file)['lastxp']
+                maxcycles = m.ceil(((3 * 1.055**int(level) + 24 + 3 * 1.055**(int(level)**1.085) * 200 * 1.1) - lastxp) / cyclexp)
 
-    else:
-        print("Incorrect input. Try again.\n\n")
-        main(args)
+        else:
+            print("Incorrect input. Try again.\n\n")
+            main(args)
 
-    prepare = input("Prepare (y/n)?: ")
-    if prepare == 'y':
-        n = -1
+        prepare = input("Prepare (y/n)?: ")
+        if prepare == 'y':
+            n = -1
 
-    elif prepare == 'n':
-        n = 0
-
-    else:
-        print("Incorrect input. Try again.\n\n")
-        main(args)
-
-    os.system('cls')
-    if n == -1:
-        printProgressBar(0, maxcycles, prefix='Progress:', suffix='Complete', length=30)
-
-    else:
-        firstprogress = lastxp / cyclexp
-        printProgressBar(firstprogress, maxcycles, prefix='Progress:', suffix='Complete', length=30)
-
-    while True:
-        # Find and click on the boss
-        while py.locateOnScreen(bot.path(args.boss), grayscale=True, confidence=bot.threshold) is None:
-            maxcycles, level = bot.exceptions(level, cyclexp, maxcycles)
-
-            print ("\033[A                             \033[A")
-            print("Finding boss...")
-            py.move(x, None)
-            x += 10
-            time.sleep(bot.delay)
-        bosscoords = py.locateCenterOnScreen(bot.path(args.boss), grayscale=True, confidence=bot.threshold)
-        py.click(bosscoords)
-
-        if n == -1:
-            bot.set_loadout()
+        elif prepare == 'n':
             n = 0
 
-        bot.prepare()
-
-        bot.attack()
-        while bot.check_death() is False:
-            print ("\033[A                             \033[A")
-            print("Continuing to attack...")
-            bot.attack()
-            time.sleep(bot.delay)
-
-        killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
-        py.click(killedcoords)
-
-        if t == -1 and n > 0:
-            if dt.datetime.now().hour >= 1:
-                n = 0
-                t += 1
-        
-        if n >= maxcycles:
-            exit()
-        n += 1
+        else:
+            print("Incorrect input. Try again.\n\n")
+            main(args)
 
         os.system('cls')
-        printProgressBar(n, maxcycles, prefix='Progress:', suffix='Complete', length=30)
+        if n == -1:
+            printProgressBar(0, maxcycles, prefix='Progress:', suffix='Complete', length=30)
 
-        e.n = n
-        e.cyclexp = cyclexp
-        e.lastxp = lastxp
+        else:
+            firstprogress = lastxp / cyclexp
+            printProgressBar(firstprogress, maxcycles, prefix='Progress:', suffix='Complete', length=30)
 
-    atexit.register(exit_handler)
+        while True:
+            # Find and click on the boss
+            while py.locateOnScreen(bot.path(args.boss), grayscale=True, confidence=bot.threshold) is None:
+                maxcycles, level = bot.exceptions(level, cyclexp, maxcycles)
+
+                print ("\033[A                             \033[A")
+                print("Finding boss...")
+                py.move(x, None)
+                x += 10
+                time.sleep(bot.delay)
+            bosscoords = py.locateCenterOnScreen(bot.path(args.boss), grayscale=True, confidence=bot.threshold)
+            py.click(bosscoords)
+
+            if n == -1:
+                bot.set_loadout()
+                n = 0
+
+            bot.prepare()
+
+            bot.attack()
+            while bot.check_death() is False:
+                print ("\033[A                             \033[A")
+                print("Continuing to attack...")
+                bot.attack()
+                time.sleep(bot.delay)
+
+            killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
+            py.click(killedcoords)
+
+            if t == -1 and n > 0:
+                if dt.datetime.now().hour >= 1:
+                    n = 0
+                    t += 1
+            
+            if n >= maxcycles:
+                exit()
+            n += 1
+
+            os.system('cls')
+            printProgressBar(n, maxcycles, prefix='Progress:', suffix='Complete', length=30)
+
+            e.n = n
+            e.cyclexp = cyclexp
+            e.lastxp = lastxp
+
+        atexit.register(exit_handler)
+        
+    except KeyboardInterrupt:
+        atexit.register(e.exit_handler)
 
 def parse_args():
 
@@ -283,7 +288,4 @@ def exit_handler():
 
 if __name__ == '__main__':
     args, _ = parse_args()
-    try:
-        main(args)
-    except KeyboardInterrupt:
-        atexit.register(exit_handler)
+    main(args)
