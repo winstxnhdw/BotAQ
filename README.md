@@ -23,7 +23,7 @@ $ python main.py -b <boss-name>
 ## How it works
 BotAQ is based on five fundamental steps.
 
-![block](screenshots/block.png)
+![flowchart](screenshots/flowchart.png)
 
 #### Finding the Boss
 A template matcher looks for the selected boss and challenges it.
