@@ -2,31 +2,40 @@
 BotAQ is a bot made to grind bosses in Adventure Quest. It utilises the PyAutoGUI library to simulate human input and perform template matching. Unfortunately, this was not made with versatility in mind, as it requires the player to reach certain specific conditions within the game. 
 
 ## Usage
-1. `pip install -r requirements.txt`
+```bash
+# Install dependencies
+$ pip install -r requirements.txt
 
-2. `python main.py -b <boss-name>`
+# Execute script
+$ python main.py -b <boss-name>
+```
+![terminal](screenshots/terminal.gif)
 
-e.g. 
-```
-python main.py -b amboss
-```
+## Custom Bosses
+1. Save a screengrab template of the boss you have chosen and save it into the templates folder
+
+![snipping](screenshots/snipping.gif)
+
+2. Open bosses.json and add your own boss flag along with the experience points gained per battle
+
+![add_boss](screenshots/add_boss.gif)
 
 ## How it works
 BotAQ is based on five fundamental steps.
 
-### Finding the Boss
+#### Finding the Boss
 A template matcher looks for the selected boss and challenges it.
 
-### Set Loadout
+#### Set Loadout
 A one-time phase to permanently set the player's loadout is engaged to identify if the player has utilised specific abilities/equipments. This is to ensure that the boss is killed as efficiently as possible.
 
-### Prepare
+#### Prepare
 The preparationary phase is only engaged once per battle. This is used to cast semi-permanent buffs on the player.
 
-### Attack
+#### Attack
 An attack is performed on the boss and checked if it is killed for every attack. If the boss is not killed, the function is repeated.
 
-### Repeat
+#### Repeat
 If the boss is killed, the steps are repeated without the setting the loadout again. This cycle eventually stops when the maximum daily limit of fighting the boss is reached. Player has the choice whether to keep last exp gained
 
 ## Future Works

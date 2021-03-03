@@ -211,6 +211,7 @@ def main(args):
             else:
                 with open('data\\userdata.json') as json_file:
                     lastxp = json.load(json_file)['lastxp']
+                    e.lastxp = lastxp
                     prevcycles = lastxp / cyclexp
 
         else:
@@ -276,7 +277,6 @@ def main(args):
 
             e.n = n
             e.cyclexp = cyclexp
-            e.lastxp = lastxp
 
         atexit.register(e.exit_handler)
         
