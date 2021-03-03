@@ -269,6 +269,7 @@ def main(args):
             if n >= maxcycles:
                 exit()
             n += 1
+            prevcycles = n
 
             os.system('cls')
             printProgressBar(n, maxcycles, prefix='Progress:', length=30)
