@@ -38,7 +38,7 @@ The preparationary phase is only engaged once per battle. This is used to cast s
 An attack is performed on the boss and checked if it is killed for every attack. If the boss is not killed, the function is repeated.
 
 #### Repeat
-If the boss is killed, the steps are repeated without the setting the loadout again. This cycle eventually stops when the maximum daily limit of fighting the boss is reached. Player has the choice whether to keep last exp gained
+If the boss is killed, the steps are repeated without the setting the loadout again. This cycle eventually stops when the maximum daily limit of fighting the boss is reached. Player has the choice whether to keep last experience points gained from previous sessions.
 
 ## Future Works
 There may be plans to use a Optical Character Recognition (OCR) engine or deep-learning model to recognise certain texts and improve the versatility of this project. There are plans to switch to the game's timezone for easier saving of user data.
