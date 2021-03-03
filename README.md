@@ -9,21 +9,21 @@ $ pip install -r requirements.txt
 # Execute script
 $ python main.py -b <boss-name>
 ```
-![terminal](screenshots/terminal.gif)
+![terminal](resources/terminal.gif)
 
 ## Custom Bosses
 1. Save a screengrab template of the boss you have chosen and save it into the templates folder
 
-![snipping](screenshots/snipping.gif)
+![snipping](resources/snipping.gif)
 
 2. Open bosses.json and add your own boss flag along with the experience points gained per battle
 
-![add_boss](screenshots/add_boss.gif)
+![add_boss](resources/add_boss.gif)
 
 ## How it works
 BotAQ is based on five fundamental steps.
 
-![flowchart](screenshots/flowchart.png)
+![flowchart](resources/flowchart.png)
 
 #### Finding the Boss
 A template matcher looks for the selected boss and challenges it.
