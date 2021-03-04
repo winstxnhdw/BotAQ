@@ -178,11 +178,15 @@ def main(args):
 
     try:
         bot = BotAQ()
-
-        with open('data\\bosses.json') as json_file:
-            basexp = json.load(json_file)[args.boss]
-
         e = Exit()
+
+        try:
+            with open('data\\bosses.json') as json_file:
+                basexp = json.load(json_file)[args.boss]
+
+        except:
+            raise Exception("There is no such boss. If this was intentional, please update the bosses.json file.")
+        
         t = -1
         cyclexp = basexp + m.floor(0.1 * basexp)
         lastxp = 0
@@ -229,6 +233,7 @@ def main(args):
             print("Incorrect input. Try again.\n\n")
             main(args)
 
+        # Initialise progress bar
         os.system('cls')
         printProgressBar(prevcycles, maxcycles, prefix='Progress:', length=30)
 
@@ -245,36 +250,42 @@ def main(args):
             bosscoords = py.locateCenterOnScreen(bot.path(args.boss), grayscale=True, confidence=bot.threshold)
             py.click(bosscoords)
 
+            # Set Loadout
             if n == -1:
                 bot.set_loadout()
                 n = 0
 
             n = prevcycles
 
+            # Prepare
             bot.prepare()
-            bot.attack()
+
+            # Attack
             while bot.check_death() is False:
                 print ("\033[A                             \033[A")
                 print("Continuing to attack...")
                 bot.attack()
                 time.sleep(bot.delay)
-
             killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
             py.click(killedcoords)
 
+            # Daily limit resets if system time is 1:00 P.M. GMT+8
             if t == -1 and n > 0:
                 if dt.datetime.now().hour == 13 and dt.datetime.now().minute == 0:
                     n = 0
                     t += 1
             
+            # Exits if bot reaches daily limit
             if n >= maxcycles:
                 exit()
             n += 1
             prevcycles = n
 
+            # Update progress bar
             os.system('cls')
             printProgressBar(n, maxcycles, prefix='Progress:', length=30)
 
+            # Save current state
             e.n = n
             e.cyclexp = cyclexp
 
