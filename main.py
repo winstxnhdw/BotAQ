@@ -35,6 +35,7 @@ class BotAQ:
 
         self.delay = 0.4
         self.threshold = 0.7
+        self.blank = "\033[A                             \033[A"
 
     def path(self, name):
 
@@ -57,7 +58,7 @@ class BotAQ:
 
         # Find and clicks skills tab
         while py.locateOnScreen(self.path('skills'), grayscale=True, confidence=self.threshold) is None:
-            print ("\033[A                             \033[A")
+            print(self.blank)
             print("Finding skills tab...")
             time.sleep(self.delay)
         skillscoords = py.locateCenterOnScreen(self.path('skills'), grayscale=True, confidence=self.threshold)
@@ -65,7 +66,7 @@ class BotAQ:
 
         # Find and clicks imbue buff
         while py.locateOnScreen(self.path('imbue'), grayscale=True, confidence=self.threshold) is None:
-            print ("\033[A                             \033[A")
+            print(self.blank)
             print("Finding imbue...")
             time.sleep(self.delay)
         imbuecoords = py.locateCenterOnScreen(self.path('imbue'), grayscale=True, confidence=self.threshold)
@@ -73,7 +74,7 @@ class BotAQ:
         
         # Find and clicks menu to exit skills
         while py.locateOnScreen(self.path('menu'), grayscale=True, confidence=self.threshold) is None:
-            print ("\033[A                             \033[A")
+            print(self.blank)
             print("Finding menu...")
             time.sleep(self.delay)
         menucoords = py.locateCenterOnScreen(self.path('menu'), grayscale=True, confidence=self.threshold)
@@ -81,7 +82,7 @@ class BotAQ:
 
         # Find and enables shield ability
         while py.locateOnScreen(self.path('poseidon'), grayscale=True, confidence=self.threshold) is None:
-            print ("\033[A                             \033[A")
+            print(self.blank)
             print("Finding shield...")
             time.sleep(self.delay)
         poseidoncoords = py.locateCenterOnScreen(self.path('poseidon'), grayscale=True, confidence=self.threshold)
@@ -89,7 +90,7 @@ class BotAQ:
 
         # Find and clicks pets tab
         while py.locateOnScreen(self.path('pets'), grayscale=True, confidence=self.threshold) is None:
-            print ("\033[A                             \033[A")
+            print(self.blank)
             print("Finding pets tab...")
             time.sleep(self.delay)
         petscoords = py.locateCenterOnScreen(self.path('pets'), grayscale=True, confidence=self.threshold)
@@ -97,7 +98,7 @@ class BotAQ:
 
         # Find and unequips item
         while py.locateOnScreen(self.path('hide'), grayscale=True, confidence=self.threshold) is None:
-            print ("\033[A                             \033[A")
+            print(self.blank)
             print("Finding pet to hide...")
             time.sleep(self.delay)
         hidecoords = py.locateCenterOnScreen(self.path('hide'), grayscale=True, confidence=self.threshold)
@@ -107,7 +108,7 @@ class BotAQ:
 
         # Find and clicks items tab
         while py.locateOnScreen(self.path('items'), grayscale=True, confidence=self.threshold) is None:
-            print ("\033[A                             \033[A")
+            print(self.blank)
             print("Finding items tab...")
             time.sleep(self.delay)
         itemscoords = py.locateCenterOnScreen(self.path('items'), grayscale=True, confidence=self.threshold)
@@ -115,7 +116,7 @@ class BotAQ:
 
         # Find and equips item
         while py.locateOnScreen(self.path('sphere'), grayscale=True, confidence=self.threshold) is None:
-            print ("\033[A                             \033[A")
+            print(self.blank)
             print("Finding item...")
             time.sleep(self.delay)
         spherecoords = py.locateCenterOnScreen(self.path('sphere'), grayscale=True, confidence=self.threshold)
@@ -123,7 +124,7 @@ class BotAQ:
         
     def attack(self):
 
-        print ("\033[A                             \033[A")
+        print(self.blank)
         print("Attacking...")
 
          # Find and clicks spells tab
@@ -131,7 +132,7 @@ class BotAQ:
             if self.check_death() == True:
                 break
 
-            print ("\033[A                             \033[A")
+            print(self.blank)
             print("Finding spells tab...")
             time.sleep(self.delay)
         spellscoords = py.locateCenterOnScreen(self.path('spells'), grayscale=True, confidence=self.threshold)
@@ -142,7 +143,7 @@ class BotAQ:
             if self.check_death() == True:
                 break
 
-            print ("\033[A                             \033[A")
+            print(self.blank)
             print("Finding spell...")
             time.sleep(self.delay)
         dbcoords = py.locateCenterOnScreen(self.path('db'), grayscale=True, confidence=self.threshold)
@@ -150,7 +151,7 @@ class BotAQ:
 
     def check_death(self):
 
-        print ("\033[A                             \033[A")
+        print(self.blank)
         print("Finding vitality signals...")
         if py.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold):
             return True
@@ -186,7 +187,7 @@ def main(args):
 
         except:
             raise Exception("There is no such boss. If this was intentional, please update the bosses.json file.")
-        
+
         t = -1
         cyclexp = basexp + m.floor(0.1 * basexp)
         lastxp = 0
@@ -242,7 +243,7 @@ def main(args):
             while py.locateOnScreen(bot.path(args.boss), grayscale=True, confidence=bot.threshold) is None:
                 maxcycles, level = bot.exceptions(level, cyclexp, maxcycles)
 
-                print ("\033[A                             \033[A")
+                print(bot.blank)
                 print("Finding boss...")
                 py.move(x, None)
                 x += 10
@@ -257,12 +258,11 @@ def main(args):
 
             n = prevcycles
 
-            # Prepare
             bot.prepare()
 
             # Attack
             while bot.check_death() is False:
-                print ("\033[A                             \033[A")
+                print(bot.blank)
                 print("Continuing to attack...")
                 bot.attack()
                 time.sleep(bot.delay)
