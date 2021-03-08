@@ -47,7 +47,9 @@ class BotAQ:
 
     def calc_cycles(self, level, cyclexp):
 
-        cycles = m.ceil((990*(1.055**level + 8 + 1.055**(level**1.085))) / cyclexp)
+        # Source: https://docs.google.com/spreadsheets/d/1xyQeKtqsUkorgTEs8IBzDEQ3qIoBXYbI9KkX3CoP04U/edit#gid=0
+        xpcap = m.ceil(990*(1.055**level + 8 + 1.055**(level**1.085)))
+        cycles = m.ceil(xpcap / cyclexp)
         return cycles
 
     def set_loadout(self):
