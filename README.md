@@ -30,7 +30,7 @@ $ python main.py -b <boss-name>
 BotAQ is based on five fundamental steps.
 
 <div align="center">
-  <img src="resources/flowchart.gif" \>
+  <img src="resources/flowchart.png" \>
 </div>
 
 #### Finding the Boss
