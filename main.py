@@ -34,7 +34,7 @@ class BotAQ:
         print("Initialising bot...")
 
         self.delay = 0.4
-        self.threshold = 0.7
+        self.threshold = 0.75
         self.blank = "\033[A                             \033[A"
 
     def path(self, name):
