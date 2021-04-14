@@ -187,7 +187,7 @@ def main(args):
             with open('data\\bosses.json') as json_file:
                 basexp = json.load(json_file)[args.boss]
 
-        except:
+        except SystemExit:
             raise Exception("There is no such boss. If this was intentional, please update the bosses.json file.")
 
         t = -1
@@ -279,6 +279,7 @@ def main(args):
             
             # Exits if bot reaches daily limit
             if n >= maxcycles:
+                atexit.register(e.exit_handler)
                 exit()
             n += 1
             prevcycles = n
@@ -291,7 +292,7 @@ def main(args):
             e.n = n
             e.cyclexp = cyclexp
 
-        atexit.register(e.exit_handler)
+            atexit.register(e.exit_handler)
         
     except KeyboardInterrupt:
         atexit.register(e.exit_handler)
