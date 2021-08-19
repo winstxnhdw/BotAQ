@@ -56,7 +56,7 @@ class BotAQ:
         
         # Activate Imbue -> Enable Shield -> Equip Item -> Unequip Pet
 
-        print("Entering prepartion phase...")
+        print("Entering preparation phase...")
 
         # Find and clicks skills tab
         while py.locateOnScreen(self.path('skills'), grayscale=True, confidence=self.threshold) is None:
@@ -190,7 +190,7 @@ def main(args):
         except SystemExit:
             raise Exception("There is no such boss. If this was intentional, please update the bosses.json file.")
 
-        t = -1
+        t = 0
         cyclexp = basexp + m.floor(0.1 * basexp)
         lastxp = 0
         prevcycles = 0
@@ -268,19 +268,26 @@ def main(args):
                 print("Continuing to attack...")
                 bot.attack()
                 time.sleep(bot.delay)
+
             killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
             py.click(killedcoords)
 
             # Daily limit resets if system time is 1:00 P.M. GMT+8
-            if t == -1 and n > 0:
-                if dt.datetime.now().hour == 13 and dt.datetime.now().minute == 0:
-                    n = 0
-                    t += 1
+            if t == 0 and n > 0:
+                if dt.datetime.now().hour == 13:
+                    n = -1
+                    t = 1
+            
+            # Only check for daily limit reset once time is no longer 1:00 P.M.
+            else:
+                if dt.datetime.now().hour > 13:
+                    t = 0
             
             # Exits if bot reaches daily limit
             if n >= maxcycles:
                 atexit.register(e.exit_handler)
                 exit()
+
             n += 1
             prevcycles = n
 
