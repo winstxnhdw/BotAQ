@@ -51,78 +51,72 @@ class BotAQ:
         cycles = m.ceil(xpcap / cyclexp)
         return cycles
 
-    def locate_equipment(self, item_name, clicks=1):
+    def standard_locate_click(self, template_name, clicks=1):
 
-        while auto.locateOnScreen(self.path(item_name), grayscale=True, confidence=self.threshold) is None:
+        while auto.locateOnScreen(self.path(template_name), grayscale=True, confidence=self.threshold) is None:
             print(self.blank)
-            print(f"Finding {item_name}..")
+            print(f"Finding {template_name.replace('_', ' ').title()}..")
             t.sleep(self.delay)
 
-        coords = auto.locateCenterOnScreen(self.path(item_name), grayscale=True, confidence=self.threshold)
+        coords = auto.locateCenterOnScreen(self.path(template_name), grayscale=True, confidence=self.threshold)
+        auto.click(coords, clicks=clicks)
+
+    def attack_locate_click(self, template_name, clicks=1):
+        
+        while auto.locateOnScreen(self.path(template_name), grayscale=True, confidence=self.threshold) is None:
+            if self.is_dead():
+                return
+
+            print(self.blank)
+            print(f"Finding {template_name.replace('_', ' ').title()}..")
+            t.sleep(self.delay)
+
+        coords = auto.locateCenterOnScreen(self.path(template_name), grayscale=True, confidence=self.threshold)
         auto.click(coords, clicks=clicks)
 
     def set_loadout(self):
         
         # Activate Imbue -> Enable Shield -> Equip Item -> Unequip Pet
-
         print("Entering preparation phase...")
 
         # Find and clicks skills tab
-        self.set_equipment('skills')
+        self.standard_locate_click('skills_tab')
 
         # Find and clicks imbue buff
-        self.set_equipment('imbue')
+        self.standard_locate_click('imbue_with_lore')
         
         # Find and clicks menu to exit skills
-        self.set_equipment('menu')
+        self.standard_locate_click('menu_button')
 
         # Find and enables shield ability
-        self.set_equipment('shield')
+        self.standard_locate_click('celtic_wheel')
 
         # Find and clicks pets tab
-        self.set_equipment('pets')
+        self.standard_locate_click('pets_tab')
 
         # Find and unequips item
-        self.set_equipment('hide', 2)
+        self.standard_locate_click('hide_button', 2)
 
     def prepare(self):
 
         # Find and clicks items tab
-        self.set_equipment('items')
+        self.standard_locate_click('items_tab')
 
         # Find and equips item
-        self.set_equipment('sphere', 2)
+        self.standard_locate_click('oblivion_sphere', 2)
         
     def attack(self):
 
         print(self.blank)
         print("Attacking...")
 
-         # Find and clicks spells tab
-        while auto.locateOnScreen(self.path('spells'), grayscale=True, confidence=self.threshold) is None:
-            if self.check_death() == True:
-                break
-
-            print(self.blank)
-            print("Finding spells tab...")
-            t.sleep(self.delay)
-
-        spellscoords = auto.locateCenterOnScreen(self.path('spells'), grayscale=True, confidence=self.threshold)
-        auto.click(spellscoords)
+        # Find and clicks spells tab
+        self.attack_locate_click('spells_tab')
 
         # Find and clicks Destruction Burst
-        while auto.locateOnScreen(self.path('db'), grayscale=True, confidence=self.threshold) is None:
-            if self.check_death() == True:
-                break
+        self.attack_locate_click('destruction_burst', 2)
 
-            print(self.blank)
-            print("Finding spell...")
-            t.sleep(self.delay)
-
-        dbcoords = auto.locateCenterOnScreen(self.path('db'), grayscale=True, confidence=self.threshold)
-        auto.click(dbcoords, clicks=2)
-
-    def check_death(self):
+    def is_dead(self):
 
         print(self.blank)
         print("Finding vitality signals...")
@@ -235,7 +229,7 @@ def main(args):
             bot.prepare()
 
             # Attack
-            while bot.check_death() is False:
+            while not bot.is_dead():
                 print(bot.blank)
                 print("Continuing to attack...")
                 bot.attack()
