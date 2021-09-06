@@ -1,14 +1,13 @@
+from libs.termbar import print_progress_bar
+
 import os
-import time
 import atexit
 import json
 import argparse
-
-import pyautogui as py
+import pyautogui as auto
 import math as m
+import time as t
 import datetime as dt
-
-from libs.termbar import *
 
 class Exit:
     
@@ -52,6 +51,16 @@ class BotAQ:
         cycles = m.ceil(xpcap / cyclexp)
         return cycles
 
+    def locate_equipment(self, item_name, clicks=1):
+
+        while auto.locateOnScreen(self.path(item_name), grayscale=True, confidence=self.threshold) is None:
+            print(self.blank)
+            print(f"Finding {item_name}..")
+            t.sleep(self.delay)
+
+        coords = auto.locateCenterOnScreen(self.path(item_name), grayscale=True, confidence=self.threshold)
+        auto.click(coords, clicks=clicks)
+
     def set_loadout(self):
         
         # Activate Imbue -> Enable Shield -> Equip Item -> Unequip Pet
@@ -59,70 +68,30 @@ class BotAQ:
         print("Entering preparation phase...")
 
         # Find and clicks skills tab
-        while py.locateOnScreen(self.path('skills'), grayscale=True, confidence=self.threshold) is None:
-            print(self.blank)
-            print("Finding skills tab...")
-            time.sleep(self.delay)
-        skillscoords = py.locateCenterOnScreen(self.path('skills'), grayscale=True, confidence=self.threshold)
-        py.click(skillscoords)
+        self.set_equipment('skills')
 
         # Find and clicks imbue buff
-        while py.locateOnScreen(self.path('imbue'), grayscale=True, confidence=self.threshold) is None:
-            print(self.blank)
-            print("Finding imbue...")
-            time.sleep(self.delay)
-        imbuecoords = py.locateCenterOnScreen(self.path('imbue'), grayscale=True, confidence=self.threshold)
-        py.click(imbuecoords)
+        self.set_equipment('imbue')
         
         # Find and clicks menu to exit skills
-        while py.locateOnScreen(self.path('menu'), grayscale=True, confidence=self.threshold) is None:
-            print(self.blank)
-            print("Finding menu...")
-            time.sleep(self.delay)
-        menucoords = py.locateCenterOnScreen(self.path('menu'), grayscale=True, confidence=self.threshold)
-        py.click(menucoords)
+        self.set_equipment('menu')
 
         # Find and enables shield ability
-        while py.locateOnScreen(self.path('poseidon'), grayscale=True, confidence=self.threshold) is None:
-            print(self.blank)
-            print("Finding shield...")
-            time.sleep(self.delay)
-        poseidoncoords = py.locateCenterOnScreen(self.path('poseidon'), grayscale=True, confidence=self.threshold)
-        py.click(poseidoncoords)
+        self.set_equipment('shield')
 
         # Find and clicks pets tab
-        while py.locateOnScreen(self.path('pets'), grayscale=True, confidence=self.threshold) is None:
-            print(self.blank)
-            print("Finding pets tab...")
-            time.sleep(self.delay)
-        petscoords = py.locateCenterOnScreen(self.path('pets'), grayscale=True, confidence=self.threshold)
-        py.click(petscoords)
+        self.set_equipment('pets')
 
         # Find and unequips item
-        while py.locateOnScreen(self.path('hide'), grayscale=True, confidence=self.threshold) is None:
-            print(self.blank)
-            print("Finding pet to hide...")
-            time.sleep(self.delay)
-        hidecoords = py.locateCenterOnScreen(self.path('hide'), grayscale=True, confidence=self.threshold)
-        py.click(hidecoords, clicks=2)
+        self.set_equipment('hide', 2)
 
     def prepare(self):
 
         # Find and clicks items tab
-        while py.locateOnScreen(self.path('items'), grayscale=True, confidence=self.threshold) is None:
-            print(self.blank)
-            print("Finding items tab...")
-            time.sleep(self.delay)
-        itemscoords = py.locateCenterOnScreen(self.path('items'), grayscale=True, confidence=self.threshold)
-        py.click(itemscoords)
+        self.set_equipment('items')
 
         # Find and equips item
-        while py.locateOnScreen(self.path('sphere'), grayscale=True, confidence=self.threshold) is None:
-            print(self.blank)
-            print("Finding item...")
-            time.sleep(self.delay)
-        spherecoords = py.locateCenterOnScreen(self.path('sphere'), grayscale=True, confidence=self.threshold)
-        py.click(spherecoords, clicks=2)
+        self.set_equipment('sphere', 2)
         
     def attack(self):
 
@@ -130,32 +99,34 @@ class BotAQ:
         print("Attacking...")
 
          # Find and clicks spells tab
-        while py.locateOnScreen(self.path('spells'), grayscale=True, confidence=self.threshold) is None:
+        while auto.locateOnScreen(self.path('spells'), grayscale=True, confidence=self.threshold) is None:
             if self.check_death() == True:
                 break
 
             print(self.blank)
             print("Finding spells tab...")
-            time.sleep(self.delay)
-        spellscoords = py.locateCenterOnScreen(self.path('spells'), grayscale=True, confidence=self.threshold)
-        py.click(spellscoords)
+            t.sleep(self.delay)
+
+        spellscoords = auto.locateCenterOnScreen(self.path('spells'), grayscale=True, confidence=self.threshold)
+        auto.click(spellscoords)
 
         # Find and clicks Destruction Burst
-        while py.locateOnScreen(self.path('db'), grayscale=True, confidence=self.threshold) is None:
+        while auto.locateOnScreen(self.path('db'), grayscale=True, confidence=self.threshold) is None:
             if self.check_death() == True:
                 break
 
             print(self.blank)
             print("Finding spell...")
-            time.sleep(self.delay)
-        dbcoords = py.locateCenterOnScreen(self.path('db'), grayscale=True, confidence=self.threshold)
-        py.click(dbcoords, clicks=2)
+            t.sleep(self.delay)
+
+        dbcoords = auto.locateCenterOnScreen(self.path('db'), grayscale=True, confidence=self.threshold)
+        auto.click(dbcoords, clicks=2)
 
     def check_death(self):
 
         print(self.blank)
         print("Finding vitality signals...")
-        if py.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold):
+        if auto.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold):
             return True
 
         else:
@@ -164,16 +135,16 @@ class BotAQ:
     def exceptions(self, level, cyclexp, maxcycles):
 
         # When player levels up
-        if py.locateOnScreen(self.path('levelled'), grayscale=True, confidence=self.threshold):
-            levelledcoords = py.locateCenterOnScreen(self.path('levelled'), grayscale=True, confidence=self.threshold)
-            py.click(levelledcoords)
+        if auto.locateOnScreen(self.path('levelled'), grayscale=True, confidence=self.threshold):
+            levelledcoords = auto.locateCenterOnScreen(self.path('levelled'), grayscale=True, confidence=self.threshold)
+            auto.click(levelledcoords)
             level = level + 1
             maxcycles = self.calc_cycles(level, cyclexp)
 
         # When player finds Z-Tokens
-        elif py.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold):
-            killedcoords = py.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold)
-            py.click(killedcoords)
+        elif auto.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold):
+            killedcoords = auto.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold)
+            auto.click(killedcoords)
 
         return maxcycles, level
 
@@ -238,20 +209,21 @@ def main(args):
 
         # Initialise progress bar
         os.system('cls')
-        printProgressBar(prevcycles, maxcycles, prefix='Progress:', length=30)
+        print_progress_bar(prevcycles, maxcycles, prefix='Progress:', length=30)
 
         while True:
             # Find and click on the boss
-            while py.locateOnScreen(bot.path(args.boss), grayscale=True, confidence=bot.threshold) is None:
+            while auto.locateOnScreen(bot.path(args.boss), grayscale=True, confidence=bot.threshold) is None:
                 maxcycles, level = bot.exceptions(level, cyclexp, maxcycles)
 
                 print(bot.blank)
                 print("Finding boss...")
-                py.move(x, None)
+                auto.move(x, None)
                 x += 10
-                time.sleep(bot.delay)
-            bosscoords = py.locateCenterOnScreen(bot.path(args.boss), grayscale=True, confidence=bot.threshold)
-            py.click(bosscoords)
+                t.sleep(bot.delay)
+
+            bosscoords = auto.locateCenterOnScreen(bot.path(args.boss), grayscale=True, confidence=bot.threshold)
+            auto.click(bosscoords)
 
             # Set Loadout
             if n == -1:
@@ -267,18 +239,18 @@ def main(args):
                 print(bot.blank)
                 print("Continuing to attack...")
                 bot.attack()
-                time.sleep(bot.delay)
+                t.sleep(bot.delay)
 
-            killedcoords = py.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
-            py.click(killedcoords)
+            killedcoords = auto.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
+            auto.click(killedcoords)
 
-            # Daily limit resets if system time is 1:00 P.M. GMT+8
+            # Daily limit resets if system t is 1:00 P.M. GMT+8
             if t == 0 and n > 0:
                 if dt.datetime.now().hour == 13:
                     n = -1
                     t = 1
             
-            # Only check for daily limit reset once time is no longer 1:00 P.M.
+            # Only check for daily limit reset once t is no longer 1:00 P.M.
             else:
                 if dt.datetime.now().hour > 13:
                     t = 0
@@ -293,7 +265,7 @@ def main(args):
 
             # Update progress bar
             os.system('cls')
-            printProgressBar(n, maxcycles, prefix='Progress:', length=30)
+            print_progress_bar(n, maxcycles, prefix='Progress:', length=30)
 
             # Save current state
             e.n = n
