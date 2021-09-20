@@ -1,5 +1,3 @@
-from libs.termbar import print_progress_bar
-
 import os
 import atexit
 import json
@@ -8,6 +6,8 @@ import pyautogui as auto
 import math as m
 import time as t
 import datetime as dt
+
+from libs.termbar import print_progress_bar
 
 class Exit:
     
