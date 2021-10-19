@@ -161,8 +161,8 @@ def main(args):
         prevcycles = 0
         x = 100 
         
-        level = input("Adventurer Level (1 - 150)?: ")
-        if int(level) >= 1 and int(level) <= 150:
+        level = int(input("Adventurer Level (1 - 150)?: "))
+        if level >= 1 and level <= 150:
             level = int(level)
             maxcycles = bot.calc_cycles(level, cyclexp)
 
@@ -170,7 +170,7 @@ def main(args):
             print("Incorrect input. Try again.\n\n")
             main(args)
 
-        clrdata = input("Do you want to clear your user data (y/n)?: ")
+        clrdata = str(input("Do you want to clear your user data? (y/n): ")).lower()
         if clrdata == 'y':
             pass
 
@@ -190,7 +190,7 @@ def main(args):
             print("Incorrect input. Try again.\n\n")
             main(args)
 
-        prepare = input("Prepare (y/n)?: ")
+        prepare = str(input("Prepare (y/n)?: ")).lower()
         if prepare == 'y':
             n = -1
 
