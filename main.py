@@ -120,11 +120,7 @@ class BotAQ:
 
         print(self.blank)
         print("Finding vitality signals...")
-        if auto.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold):
-            return True
-
-        else:
-            return False
+        return auto.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold)
 
     def exceptions(self, level, cyclexp, maxcycles):
 
