@@ -4,10 +4,10 @@ import json
 import argparse
 import pyautogui as auto
 import math as m
-import time as t
 import datetime as dt
 
 from libs.termbar import print_progress_bar
+from time import sleep
 
 class Exit:
     
@@ -56,7 +56,7 @@ class BotAQ:
         while auto.locateOnScreen(self.path(template_name), grayscale=True, confidence=self.threshold) is None:
             print(self.blank)
             print(f"Finding {template_name.replace('_', ' ').title()}..")
-            t.sleep(self.delay)
+            sleep(self.delay)
 
         coords = auto.locateCenterOnScreen(self.path(template_name), grayscale=True, confidence=self.threshold)
         auto.click(coords, clicks=clicks)
@@ -69,7 +69,7 @@ class BotAQ:
 
             print(self.blank)
             print(f"Finding {template_name.replace('_', ' ').title()}..")
-            t.sleep(self.delay)
+            sleep(self.delay)
 
         coords = auto.locateCenterOnScreen(self.path(template_name), grayscale=True, confidence=self.threshold)
         auto.click(coords, clicks=clicks)
@@ -208,9 +208,9 @@ def main(args):
 
                 print(bot.blank)
                 print("Finding boss...")
-                auto.move(x, None)
+                auto.move(x, 0)
                 x += 10
-                t.sleep(bot.delay)
+                sleep(bot.delay)
 
             bosscoords = auto.locateCenterOnScreen(bot.path(args.boss), grayscale=True, confidence=bot.threshold)
             auto.click(bosscoords)
@@ -229,7 +229,7 @@ def main(args):
                 print(bot.blank)
                 print("Continuing to attack...")
                 bot.attack()
-                t.sleep(bot.delay)
+                sleep(bot.delay)
 
             killedcoords = auto.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
             auto.click(killedcoords)
