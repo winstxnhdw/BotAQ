@@ -1,13 +1,13 @@
 import os
-import atexit
-import json
-import pyautogui as auto
-import math as m
-import datetime as dt
 
 from libs.termbar import print_progress_bar
+from pyautogui import locateCenterOnScreen, locateOnScreen, click, move
+from atexit import register
 from time import sleep
+from json import load, dump
+from math import floor, ceil
 from argparse import ArgumentParser
+from datetime import datetime as dt
 
 class Exit:
     
@@ -24,7 +24,7 @@ class Exit:
         data = {'lastxp': totalxp}
 
         with open('data\\userdata.json', 'w') as outfile:
-            json.dump(data, outfile, indent=4)
+            dump(data, outfile, indent=4)
 
 class BotAQ:
 
@@ -60,23 +60,23 @@ class BotAQ:
 
         multiplier = (1485 if self.is_x_guardian else 1350) if level < 150 else (495 if self.is_x_guardian else 450)
         cap = multiplier * (1.055**level + 1.055**(level**1.085) + 8)
-        cycles = m.ceil(cap / cyclexp)
+        cycles = ceil(cap / cyclexp)
 
         return cycles
 
     def standard_locate_click(self, template_name, clicks=1):
 
-        while auto.locateOnScreen(self.path(template_name), grayscale=True, confidence=self.threshold) is None:
+        while locateOnScreen(self.path(template_name), grayscale=True, confidence=self.threshold) is None:
             print(self.blank)
             print(f"Finding {template_name.replace('_', ' ').title()}..")
             sleep(self.delay)
 
-        coords = auto.locateCenterOnScreen(self.path(template_name), grayscale=True, confidence=self.threshold)
-        auto.click(coords, clicks=clicks)
+        coords = locateCenterOnScreen(self.path(template_name), grayscale=True, confidence=self.threshold)
+        click(coords, clicks=clicks)
 
     def attack_locate_click(self, template_name, clicks=1):
         
-        while auto.locateOnScreen(self.path(template_name), grayscale=True, confidence=self.threshold) is None:
+        while locateOnScreen(self.path(template_name), grayscale=True, confidence=self.threshold) is None:
             if self.is_dead():
                 return
 
@@ -84,25 +84,13 @@ class BotAQ:
             print(f"Finding {template_name.replace('_', ' ').title()}..")
             sleep(self.delay)
 
-        coords = auto.locateCenterOnScreen(self.path(template_name), grayscale=True, confidence=self.threshold)
-        auto.click(coords, clicks=clicks)
+        coords = locateCenterOnScreen(self.path(template_name), grayscale=True, confidence=self.threshold)
+        click(coords, clicks=clicks)
 
     def set_loadout(self):
         
-        # Activate Imbue -> Enable Shield -> Equip Item -> Unequip Pet
+        # Unequips Pet
         print("Entering preparation phase...")
-
-        # Find and clicks skills tab
-        self.standard_locate_click('skills_tab')
-
-        # Find and clicks imbue buff
-        self.standard_locate_click('imbue_with_lore')
-        
-        # Find and clicks menu to exit skills
-        self.standard_locate_click('menu_button')
-
-        # Find and enables shield ability
-        self.standard_locate_click('celtic_wheel')
 
         # Find and clicks pets tab
         self.standard_locate_click('pets_tab')
@@ -133,21 +121,21 @@ class BotAQ:
 
         print(self.blank)
         print("Finding vitality signals...")
-        return auto.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold)
+        return locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold)
 
     def exceptions(self, level, cyclexp, maxcycles):
 
         # When player levels up
-        if auto.locateOnScreen(self.path('levelled'), grayscale=True, confidence=self.threshold):
-            levelledcoords = auto.locateCenterOnScreen(self.path('levelled'), grayscale=True, confidence=self.threshold)
-            auto.click(levelledcoords)
+        if locateOnScreen(self.path('levelled'), grayscale=True, confidence=self.threshold):
+            levelledcoords = locateCenterOnScreen(self.path('levelled'), grayscale=True, confidence=self.threshold)
+            click(levelledcoords)
             level = level + 1
             maxcycles = self.calculate_total_cycles(level, cyclexp)
 
         # When player finds Z-Tokens
-        elif auto.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold):
-            killedcoords = auto.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold)
-            auto.click(killedcoords)
+        elif locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold):
+            killedcoords = locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold)
+            click(killedcoords)
 
         return maxcycles, level
 
@@ -159,60 +147,59 @@ def get_adventurer_level():
 
     level = int(input("Adventurer Level (1 - 150)?: "))
 
-    if level < 1 and level > 150:
+    if level < 1 or level > 150:
         incorrect_input()
         get_adventurer_level()
 
     return level
 
+def get_userdata():
+
+    clrdata = str(input("Do you want to clear your user data? (y/N): ")).lower()
+
+    if clrdata == 'y':
+        return True
+
+    elif clrdata == 'n':
+        if not os.path.exists("data\\userdata.json"):
+            with open('data\\userdata.json', 'w') as outfile:
+                data = {'lastxp': 0}
+                dump(data, outfile, indent=4)
+
+    else:
+        incorrect_input()
+        get_userdata()
+
+    return False
+
 def main(args):
 
     e = Exit()
-    
+
     try:
         bot = BotAQ(True)
 
         try:
             with open('data\\bosses.json') as json_file:
-                basexp = json.load(json_file)[args.boss]
+                basexp = load(json_file)[args.boss]
 
         except SystemExit:
             raise Exception("There is no such boss. If this was intentional, please update the bosses.json file.")
 
         t = 0
-        cyclexp = basexp + m.floor(0.1 * basexp)
+        cyclexp = basexp + floor(0.1 * basexp)
         lastxp = 0
         prevcycles = 0
         x = 100 
         
-        level = int(input("Adventurer Level (1 - 150)?: "))
-        if level >= 1 and level <= 150:
-            level = int(level)
-            maxcycles = bot.calculate_total_cycles(level, cyclexp)
+        level = get_adventurer_level()
+        maxcycles = bot.calculate_total_cycles(level, cyclexp)
 
-        else:
-            print("Incorrect input. Try again.\n\n")
-            main(args)
-
-        clrdata = str(input("Do you want to clear your user data? (y/N): ")).lower()
-        if clrdata == 'y':
-            pass
-
-        elif clrdata == 'n':
-            if not os.path.exists("data\\userdata.json"):
-                with open('data\\userdata.json', 'w') as outfile:
-                    data = {'lastxp': 0}
-                    json.dump(data, outfile, indent=4)
-            
-            else:
-                with open('data\\userdata.json') as json_file:
-                    lastxp = json.load(json_file)['lastxp']
-                    e.lastxp = lastxp
-                    prevcycles = lastxp / cyclexp
-
-        else:
-            print("Incorrect input. Try again.\n\n")
-            main(args)
+        if not get_userdata():
+            with open('data\\userdata.json') as json_file:
+                lastxp = load(json_file)['lastxp']
+                e.lastxp = lastxp
+                prevcycles = lastxp / cyclexp
 
         prepare = str(input("Prepare (y/N)?: ")).lower()
         if prepare == 'y':
@@ -231,17 +218,17 @@ def main(args):
 
         while True:
             # Find and click on the boss
-            while auto.locateOnScreen(bot.path(args.boss), grayscale=True, confidence=bot.threshold) is None:
+            while locateOnScreen(bot.path(args.boss), grayscale=True, confidence=bot.threshold) is None:
                 maxcycles, level = bot.exceptions(level, cyclexp, maxcycles)
 
                 print(bot.blank)
                 print("Finding boss...")
-                auto.move(x, 0)
+                move(x, 0)
                 x += 10
                 sleep(bot.delay)
 
-            bosscoords = auto.locateCenterOnScreen(bot.path(args.boss), grayscale=True, confidence=bot.threshold)
-            auto.click(bosscoords)
+            bosscoords = locateCenterOnScreen(bot.path(args.boss), grayscale=True, confidence=bot.threshold)
+            click(bosscoords)
 
             # Set Loadout
             if n == -1:
@@ -259,23 +246,23 @@ def main(args):
                 bot.attack()
                 sleep(bot.delay)
 
-            killedcoords = auto.locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
-            auto.click(killedcoords)
+            killedcoords = locateCenterOnScreen(bot.path('killed'), grayscale=True, confidence=bot.threshold)
+            click(killedcoords)
 
             # Daily limit resets if system t is 1:00 P.M. GMT+8
             if t == 0 and n > 0:
-                if dt.datetime.now().hour == 13:
+                if dt.now().hour == 13:
                     n = -1
                     t = 1
             
             # Only check for daily limit reset once t is no longer 1:00 P.M.
             else:
-                if dt.datetime.now().hour > 13:
+                if dt.now().hour > 13:
                     t = 0
             
             # Exits if bot reaches daily limit
             if n >= maxcycles:
-                atexit.register(e.exit_handler)
+                register(e.exit_handler)
                 exit()
 
             n += 1
@@ -289,13 +276,13 @@ def main(args):
             e.n = n
             e.cyclexp = cyclexp
 
-            atexit.register(e.exit_handler)
+            register(e.exit_handler)
         
     except KeyboardInterrupt:
-        print("Manual exit detected.")
+        print("\nManual exit detected.")
 
     finally:
-        atexit.register(e.exit_handler)
+        register(e.exit_handler)
         pass
 
 def parse_args():
