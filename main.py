@@ -1,13 +1,13 @@
 import os
 import atexit
 import json
-import argparse
 import pyautogui as auto
 import math as m
 import datetime as dt
 
 from libs.termbar import print_progress_bar
 from time import sleep
+from argparse import ArgumentParser
 
 class Exit:
     
@@ -28,9 +28,11 @@ class Exit:
 
 class BotAQ:
 
-    def __init__(self):
+    def __init__(self, is_x_guardian):
         
-        print("Initialising bot...")
+        print("Initialising bot..")
+
+        self.is_x_guardian = is_x_guardian
 
         self.delay = 0.4
         self.threshold = 0.75
@@ -44,11 +46,22 @@ class BotAQ:
 
         return path
 
-    def calc_cycles(self, level, cyclexp):
+    def calculate_total_cycles(self, level, cyclexp):
 
-        # Source: https://docs.google.com/spreadsheets/d/1xyQeKtqsUkorgTEs8IBzDEQ3qIoBXYbI9KkX3CoP04U/edit#gid=0
-        xpcap = m.ceil(990*(1.055**level + 8 + 1.055**(level**1.085)))
-        cycles = m.ceil(xpcap / cyclexp)
+        """
+        If player has reached the maximum level, the max daily gold cap is used instead.
+        Source: https://adventurequestwiki.fandom.com/wiki/Big_List_of_AQ_Formulas#EXP/Gold_Caps
+
+        :param level:       (int) Player's current level
+        :param cyclexp:     (float) Player's current cyclexp
+
+        :return cycles:     (int) Player's max cycles
+        """
+
+        multiplier = (1485 if self.is_x_guardian else 1350) if level < 150 else (495 if self.is_x_guardian else 450)
+        cap = multiplier * (1.055**level + 1.055**(level**1.085) + 8)
+        cycles = m.ceil(cap / cyclexp)
+
         return cycles
 
     def standard_locate_click(self, template_name, clicks=1):
@@ -129,7 +142,7 @@ class BotAQ:
             levelledcoords = auto.locateCenterOnScreen(self.path('levelled'), grayscale=True, confidence=self.threshold)
             auto.click(levelledcoords)
             level = level + 1
-            maxcycles = self.calc_cycles(level, cyclexp)
+            maxcycles = self.calculate_total_cycles(level, cyclexp)
 
         # When player finds Z-Tokens
         elif auto.locateCenterOnScreen(self.path('killed'), grayscale=True, confidence=self.threshold):
@@ -138,11 +151,26 @@ class BotAQ:
 
         return maxcycles, level
 
+def incorrect_input():
+
+    print("Incorrect input. Try again.\n\n")
+
+def get_adventurer_level():
+
+    level = int(input("Adventurer Level (1 - 150)?: "))
+
+    if level < 1 and level > 150:
+        incorrect_input()
+        get_adventurer_level()
+
+    return level
+
 def main(args):
 
+    e = Exit()
+    
     try:
-        bot = BotAQ()
-        e = Exit()
+        bot = BotAQ(True)
 
         try:
             with open('data\\bosses.json') as json_file:
@@ -160,13 +188,13 @@ def main(args):
         level = int(input("Adventurer Level (1 - 150)?: "))
         if level >= 1 and level <= 150:
             level = int(level)
-            maxcycles = bot.calc_cycles(level, cyclexp)
+            maxcycles = bot.calculate_total_cycles(level, cyclexp)
 
         else:
             print("Incorrect input. Try again.\n\n")
             main(args)
 
-        clrdata = str(input("Do you want to clear your user data? (y/n): ")).lower()
+        clrdata = str(input("Do you want to clear your user data? (y/N): ")).lower()
         if clrdata == 'y':
             pass
 
@@ -186,7 +214,7 @@ def main(args):
             print("Incorrect input. Try again.\n\n")
             main(args)
 
-        prepare = str(input("Prepare (y/n)?: ")).lower()
+        prepare = str(input("Prepare (y/N)?: ")).lower()
         if prepare == 'y':
             n = -1
 
@@ -264,11 +292,15 @@ def main(args):
             atexit.register(e.exit_handler)
         
     except KeyboardInterrupt:
+        print("Manual exit detected.")
+
+    finally:
         atexit.register(e.exit_handler)
+        pass
 
 def parse_args():
 
-    parser = argparse.ArgumentParser(description='Finds the name of the boss to attack')
+    parser = ArgumentParser(description='Finds the name of the boss to attack')
     parser.add_argument('-b', '--boss', type=str, metavar='', required=True, help='Name of boss to attack')
 
     return parser.parse_known_args()
