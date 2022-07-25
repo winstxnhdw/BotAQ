@@ -73,6 +73,7 @@ class Grind(Mode):
 
     def get_gold_cap(self) -> float:
 
+        # Source: https://github.com/nivp/aq_classic_launcher/blob/master/index.js
         level: int = self.character_details["level"]
         cap = ceil((1.055**level + 1.055**(level**1.085) + 8) * 450)
         
