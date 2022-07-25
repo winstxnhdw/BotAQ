@@ -1,0 +1,1 @@
+from bot.utils.locate_onscreen import LocateOnScreen
