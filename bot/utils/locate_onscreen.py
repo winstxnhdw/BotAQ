@@ -1,3 +1,5 @@
+from bot.console import log, underscore_to_title
+
 from pyautogui import locateOnScreen, center, click
 from time import sleep
 
@@ -35,8 +37,9 @@ class LocateOnScreen:
         coordinates = self.located(template_name)
 
         if coordinates:
+            self.log_action
             click(center(coordinates), clicks=clicks)
 
-    def log_action(self, template_name):
+    def log_action(self, template_name: str):
 
-        print(f"Finding {template_name.replace('_', ' ').title()}..")
+        log(f"Finding {underscore_to_title(template_name)}..")

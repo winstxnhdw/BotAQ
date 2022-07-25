@@ -1,5 +1,5 @@
 from bot.modes import Mode, ExperienceGrind, GoldGrind, ChargeKindred
-from bot.utils import warn, incorrect_input, clear_console
+from bot.console import warn, incorrect_input, clear_console
 
 def get_bot_mode(modes: str) -> str:
 

@@ -5,19 +5,41 @@ BotAQ is a CLI bot made to grind bosses in Adventure Quest. It utilises the PyAu
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/winstxnhdw/BotAQ.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/winstxnhdw/BotAQ/alerts/)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/winstxnhdw/BotAQ.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/winstxnhdw/BotAQ/context:python)
 
-## Usage
-
-```bash
-# Install dependencies
-$ pip install -r requirements.txt
-
-# Execute script
-python main.py
-```
-
 <div align="center">
   <img src="resources/terminal.gif" \>
 </div>
+
+## Install
+
+We will install the dependencies in a Python virtual environment to avoid polluting the global environment.
+
+```bash
+python -m venv venv
+```
+
+Then we will activate the virtual environment in our shell. For Windows, execute the following commands.
+
+```ps1
+venv\Scripts\activate
+```
+
+If you are on Linux, you should prepend the `source` command like so.
+
+```bash
+source venv/Scripts/activate
+```
+
+You may install the dependencies once you have activated the virtual environment.
+
+```bash
+pip install -r requirements.txt
+```
+
+## Usage
+
+```bash
+python main.py
+```
 
 ## Custom Bosses
 

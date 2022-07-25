@@ -1,5 +1,8 @@
 from bot.modes import Mode
-from bot.utils import LocateOnScreen, incorrect_input, clear_console, warn
+from bot.utils import LocateOnScreen
+
+from bot.console import incorrect_input, clear_console, log
+from bot.console import warn, underscore_to_title
 
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
@@ -25,7 +28,7 @@ class Grind(Mode):
 
         boss_template_directory = f"{self.templates_directory}/bosses/"
         self.boss_name = self.get_boss_name(boss_template_directory)
-        self.locate_bosses = LocateOnScreen(boss_template_directory, self.format, self.threshold, 1)
+        self.locate_bosses = LocateOnScreen(boss_template_directory, self.format, self.confidence_threshold, 0.5)
 
     def get_character_id(self):
 
@@ -50,7 +53,7 @@ class Grind(Mode):
 
             else:
                 with open(userdata_path, "w") as json_file:
-                    dump({"character_id": character_id}, json_file)
+                    dump({"character_id": character_id}, json_file, indent=2)
                     return character_id
 
     def get_character_details(self) -> dict[str, any]:
@@ -82,7 +85,7 @@ class Grind(Mode):
         max_boss_index = len(boss_names) - 1
 
         while True:
-            [print(f"[{i}] {boss_name}") for i, boss_name in enumerate(boss_names)]
+            [print(f"[{i}] {underscore_to_title(boss_name)}") for i, boss_name in enumerate(boss_names)]
 
             try:
                 boss_index = int(input(f"\nBoss index (0 - {max_boss_index}): "))
@@ -91,7 +94,7 @@ class Grind(Mode):
             except (ValueError, IndexError):
                 incorrect_input()
 
-    def print_progress_bar(self, progress, length=100):
+    def print_progress_bar(self, progress, length=50):
         
         clear_console()
         filled_length = int(length * progress)
@@ -100,15 +103,15 @@ class Grind(Mode):
 
     def prepare_buffs(self):
         
-        print("Preparing buffs..")
+        log("Preparing buffs..")
         self.locate_templates.wait_until_clicked("items_tab")
         self.locate_templates.wait_until_clicked("oblivion_sphere", 2)
 
     def attack(self):
 
-        print("Attacking..")
-        self.locate_templates.wait_until_clicked("spells_tab")
-        self.locate_templates.wait_until_clicked("destruction_burst", 2)
+        log("Attacking..")
+        self.locate_templates.click_if_located("spells_tab")
+        self.locate_templates.click_if_located("destruction_burst", 2)
 
     def main_loop(self):
 
