@@ -1,4 +1,4 @@
-from bot.modes import ExperienceGrind, GoldGrind, ChargeKindred
+from bot.modes import Mode, ExperienceGrind, GoldGrind, ChargeKindred
 from bot.utils import warn, incorrect_input, clear_console
 
 def get_bot_mode(modes: str) -> str:
@@ -7,7 +7,8 @@ def get_bot_mode(modes: str) -> str:
         [print(f"[{i}] {mode}") for i, mode in enumerate(modes)]
 
         try:
-            return list(modes)[int(input(f"\nSelect mode (0 - {len(modes) - 1}): "))]
+            mode_index = int(input(f"\nSelect mode (0 - {len(modes) - 1}): "))
+            return list(modes)[mode_index]
 
         except (ValueError, IndexError):
             incorrect_input()
@@ -17,7 +18,7 @@ def main():
 
     clear_console()
 
-    modes = {
+    modes: dict[str, Mode] = {
         "EXP Grind": ExperienceGrind,
         "Gold Grind": GoldGrind,
         "Charge Kindred": ChargeKindred
@@ -26,7 +27,7 @@ def main():
     mode = get_bot_mode(modes.keys())
 
     try:
-        modes.get(mode)().start()
+        modes[mode]().start()
 
     except KeyboardInterrupt:
         warn("\nManual exit detected.")

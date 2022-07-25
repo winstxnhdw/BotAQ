@@ -3,6 +3,7 @@ from bot.utils import LocateOnScreen, incorrect_input, clear_console, get_data, 
 
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
+from math import ceil
 from json import loads
 from os import listdir
 from os.path import isfile, join
@@ -15,9 +16,9 @@ class Grind(Mode):
 
         super().__init__()
         self.progress = 0.0
-        self.character_id = get_data("userdata").get("character_id")
+        self.character_id = get_data("userdata")["character_id"]
         self.character_details = self.get_character_details()
-        self.is_x_guardian = True if self.character_details.get("type") == "X-Guardian" else False
+        self.is_x_guardian = True if self.character_details["type"] == "X-Guardian" else False
 
         boss_template_directory = f"{self.templates_directory}/bosses/"
         self.boss_name = self.get_boss_name(boss_template_directory)
@@ -29,17 +30,18 @@ class Grind(Mode):
         
         try:
             with urlopen(request) as response:
-                return loads(response.read()).get("details")
+                return loads(response.read())["details"]
 
-        except HTTPError:
+        except (HTTPError, KeyError):
             warn("Could not retrieve character details from the battleon API.")
             warn("Please check if the following URL endpoint is accessible: https://account.battleon.com/charpage/details?id=10")
             raise
 
     def get_gold_cap(self) -> float:
 
-        level = self.character_details.get("level")
-        cap = (1.055**level + 1.055**(level**1.085) + 8) * 450
+        level: int = self.character_details["level"]
+        cap: float = ceil((1.055**level + 1.055**(level**1.085) + 8) * 450)
+        
         return cap if not self.is_x_guardian else cap * 1.1
 
     def get_boss_name(self, boss_template_directory: str) -> str:

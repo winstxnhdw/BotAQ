@@ -8,5 +8,5 @@ class ExperienceGrind(Grind):
 
     def main_loop(self):
         
-        self.progress = self.get_character_details().get("dailyExp")/self.get_experience_cap()
+        self.progress = self.character_details["dailyExp"]/self.get_experience_cap()
         super().main_loop()
