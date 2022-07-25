@@ -1,4 +1,7 @@
-from bot.modes import Mode, ExperienceGrind, GoldGrind, ChargeKindred, SkipDialogue
+from bot.modes import Mode, SkipDialogue
+from bot.modes import ExperienceGrind, GoldGrind
+from bot.modes import ChargeKindred, ChargeBookOfBurns
+
 from bot.console import warn, incorrect_input, clear_console
 
 def get_bot_mode(modes: str) -> str:
@@ -21,6 +24,7 @@ def main():
         "EXP Grind": ExperienceGrind,
         "Gold Grind": GoldGrind,
         "Charge Kindred": ChargeKindred,
+        "Charge Book of Burns": ChargeBookOfBurns,
         "Skip Dialogue": SkipDialogue
     }
 
