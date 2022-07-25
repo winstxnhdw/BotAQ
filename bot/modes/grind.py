@@ -1,13 +1,16 @@
 from bot.modes import Mode
-from bot.utils import LocateOnScreen, incorrect_input, clear_console, get_data, warn
+from bot.utils import LocateOnScreen, incorrect_input, clear_console, warn
 
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
-from math import ceil
-from json import loads
-from os import listdir
-from os.path import isfile, join
 
+from json import load, loads, dump
+from json.decoder import JSONDecodeError
+
+from os import listdir
+from os.path import isfile
+
+from math import ceil
 from pyautogui import moveTo
 
 class Grind(Mode):
@@ -16,7 +19,7 @@ class Grind(Mode):
 
         super().__init__()
         self.progress = 0.0
-        self.character_id = get_data("userdata")["character_id"]
+        self.character_id = self.get_character_id()
         self.character_details = self.get_character_details()
         self.is_x_guardian = True if self.character_details["type"] == "X-Guardian" else False
 
@@ -24,9 +27,37 @@ class Grind(Mode):
         self.boss_name = self.get_boss_name(boss_template_directory)
         self.locate_bosses = LocateOnScreen(boss_template_directory, self.format, self.threshold, 1)
 
+    def get_character_id(self):
+
+        clear_console()
+        userdata_path = "data/userdata.json"
+
+        if isfile(userdata_path):
+            with open(userdata_path) as json_file:
+                try:
+                    return int(load(json_file).get("character_id"))
+
+                except (JSONDecodeError, ValueError, TypeError):
+                    warn(f"{userdata_path} is found but the data has been corrupted.")
+                    warn("Recreating JSON data..\n")
+
+        while True:
+            try:
+                character_id = int(input("Enter your Character ID: "))
+
+            except ValueError:
+                incorrect_input()
+
+            else:
+                with open(userdata_path, "w") as json_file:
+                    dump({"character_id": character_id}, json_file)
+                    return character_id
+
     def get_character_details(self) -> dict[str, any]:
 
-        request = Request(f"https://account.battleon.com/charpage/details?id={self.character_id}", headers={"User-Agent": "Mozilla/5.0"})
+        request = Request(f"https://account.battleon.com/charpage/details?id={self.character_id}", headers={
+            "User-Agent": "Mozilla/5.0"
+        })
         
         try:
             with urlopen(request) as response:
@@ -40,14 +71,14 @@ class Grind(Mode):
     def get_gold_cap(self) -> float:
 
         level: int = self.character_details["level"]
-        cap: float = ceil((1.055**level + 1.055**(level**1.085) + 8) * 450)
+        cap = ceil((1.055**level + 1.055**(level**1.085) + 8) * 450)
         
         return cap if not self.is_x_guardian else cap * 1.1
 
     def get_boss_name(self, boss_template_directory: str) -> str:
 
         clear_console()
-        boss_names = [file.split('.')[0] for file in listdir(boss_template_directory) if isfile(join(boss_template_directory, file))]
+        boss_names = [file.split('.')[0] for file in listdir(boss_template_directory) if isfile(f"{boss_template_directory}/{file}")]
         max_boss_index = len(boss_names) - 1
 
         while True:
@@ -59,7 +90,6 @@ class Grind(Mode):
 
             except (ValueError, IndexError):
                 incorrect_input()
-                continue
 
     def print_progress_bar(self, progress, length=100):
         
@@ -90,7 +120,7 @@ class Grind(Mode):
             moveTo(50, 50)
             self.locate_bosses.log_action(self.boss_name)
 
-            # Check if dead or has levelled up
+            # Check if the player is dead or has levelled up
             self.locate_templates.click_if_located(fight_end_template)
             self.locate_templates.click_if_located("level_up_button")
 

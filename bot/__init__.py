@@ -12,7 +12,6 @@ def get_bot_mode(modes: str) -> str:
 
         except (ValueError, IndexError):
             incorrect_input()
-            continue
 
 def main():
 
@@ -24,9 +23,8 @@ def main():
         "Charge Kindred": ChargeKindred
     }
 
-    mode = get_bot_mode(modes.keys())
-
     try:
+        mode = get_bot_mode(modes.keys())
         modes[mode]().start()
 
     except KeyboardInterrupt:
