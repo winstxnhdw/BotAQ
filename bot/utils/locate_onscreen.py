@@ -25,7 +25,7 @@ class LocateOnScreen:
     def wait_until_clicked(self, template_name, clicks=1):
 
         coordinates = None
-
+        
         while not coordinates:
             coordinates = self.located(template_name)
             self.log_action(template_name)

@@ -1,20 +1,17 @@
 from bot.modes import Mode
-from bot.utils import LocateOnScreen
+from bot.utils import LocateOnScreen, reset_cursor
 
 from bot.console import incorrect_input, clear_console, log
 from bot.console import warn, underscore_to_title
 
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
-
 from json import load, loads, dump
 from json.decoder import JSONDecodeError
 
 from os import listdir
 from os.path import isfile
-
 from math import ceil
-from pyautogui import moveTo
 
 class Grind(Mode):
 
@@ -121,7 +118,7 @@ class Grind(Mode):
         fight_end_template = "killed_button"
 
         while not self.locate_bosses.located(self.boss_name):
-            moveTo(50, 50)
+            reset_cursor()
             self.locate_bosses.log_action(self.boss_name)
 
             # Check if the player is dead or has levelled up

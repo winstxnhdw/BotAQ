@@ -9,7 +9,7 @@ class Mode:
         self.templates_directory = "templates/"
         self.format = ".png"
         self.confidence_threshold = 0.75
-        self.locate_templates = LocateOnScreen(self.templates_directory, self.format, self.confidence_threshold, 0.2)
+        self.locate_templates = self.set_locate_templates(self.templates_directory, self.format, self.confidence_threshold, 0.2)
 
     def main_loop(self):
         
@@ -21,3 +21,7 @@ class Mode:
 
         while not self.completed:
             self.main_loop()
+
+    def set_locate_templates(self, templates_directory: str, format: str, confidence_threshold: float, timeout: float):
+        
+        return LocateOnScreen(templates_directory, format, confidence_threshold, 0.2)
