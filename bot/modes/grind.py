@@ -53,7 +53,7 @@ class Grind(Mode):
                     dump({"character_id": character_id}, json_file, indent=2)
                     return character_id
 
-    def get_character_details(self) -> dict[str, any]:
+    def get_character_details(self) -> dict[str, int | str]:
 
         request = Request(f"https://account.battleon.com/charpage/details?id={self.character_id}", headers={
             "User-Agent": "Mozilla/5.0"
