@@ -1,3 +1,4 @@
 opencv-python >= 4.4.0.40
 pyautogui >= 0.9.48
 pillow >= 9.2.0
+typing-extensions >= 4.3.0

@@ -1,9 +1,12 @@
 from bot.console import log, underscore_to_title
 
-from pyautogui import locateOnScreen, center, click
 from time import sleep
+from pyautogui import locateOnScreen, center, click
+from typing_extensions import Self
 
 class LocateOnScreen:
+
+    log_action = lambda _, template_name: log(f"Finding {underscore_to_title(template_name)}..")
 
     def __init__(self, template_directory, template_format, confidence, delay, grayscale=True):
 
@@ -22,7 +25,7 @@ class LocateOnScreen:
             grayscale=self.grayscale
         )
 
-    def wait_until_clicked(self, template_name, clicks=1):
+    def wait_until_clicked(self, template_name, clicks=1) -> Self:
 
         coordinates = None
         
@@ -32,14 +35,15 @@ class LocateOnScreen:
 
         click(center(coordinates), clicks=clicks)
 
-    def click_if_located(self, template_name, clicks=1):
+        return self
+
+    def click_if_located(self, template_name, clicks=1) -> bool:
 
         coordinates = self.located(template_name)
 
         if coordinates:
-            self.log_action
+            self.log_action(template_name)
             click(center(coordinates), clicks=clicks)
+            return True
 
-    def log_action(self, template_name: str):
-
-        log(f"Finding {underscore_to_title(template_name)}..")
+        return False

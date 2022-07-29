@@ -1,5 +1,4 @@
-
-warn = lambda object, **kwargs : print(f"\x1b[33;20m{object}\x1b[0m", **kwargs)
+warn = lambda *args, **kwargs : [print(f"\x1b[33;20m{object}\x1b[0m", **kwargs) for object in args]
 
 def log(object, **kwargs):
 
