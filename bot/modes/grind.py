@@ -129,6 +129,7 @@ class Grind(Mode):
         while not self.locate_bosses.located(self.boss_name):
             reset_cursor()
             self.locate_bosses.log_action(self.boss_name)
+            self.locate_templates.click_if_located(self.fight_end_template) # if player got z-token
             self.locate_templates.click_if_located("level_up_button") # if the player is dead or has levelled up
 
         if not self.locate_bosses.click_if_located(self.boss_name):
