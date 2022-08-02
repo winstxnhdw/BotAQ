@@ -18,7 +18,11 @@ class Grind(Mode):
     def __init__(self):
 
         super().__init__()
+        self.get_character_detail_url = lambda id : f"https://account.battleon.com/charpage/details?id={id}"
+        self.fight_end_template = "win_button"
+        self.userdata_path = "data/userdata.json"
         self.progress = 0.0
+
         self.character_id = self.get_character_id()
         self.character_details = self.get_character_details()
         self.is_x_guardian = True if self.character_details["type"] == "X-Guardian" else False
@@ -26,21 +30,20 @@ class Grind(Mode):
         boss_template_directory = f"{self.templates_directory}/bosses/"
         self.boss_name = self.get_boss_name(boss_template_directory)
         self.locate_bosses = LocateOnScreen(boss_template_directory, self.format, self.confidence_threshold, 0.5)
-        self.fight_end_template = "win_button"
+
 
     def get_character_id(self):
 
         clear_console()
-        userdata_path = "data/userdata.json"
 
-        if isfile(userdata_path):
-            with open(userdata_path) as json_file:
+        if isfile(self.userdata_path):
+            with open(self.userdata_path) as json_file:
                 try:
                     return int(load(json_file).get("character_id"))
 
                 except (JSONDecodeError, ValueError, TypeError):
                     warn(
-                        f"{userdata_path} is found but the data has been corrupted.",
+                        f"{self.userdata_path} is found but the data has been corrupted.",
                         "Recreating JSON data..\n"
                     )
 
@@ -52,13 +55,13 @@ class Grind(Mode):
                 incorrect_input()
 
             else:
-                with open(userdata_path, "w") as json_file:
+                with open(self.userdata_path, "w") as json_file:
                     dump({"character_id": character_id}, json_file, indent=2)
                     return character_id
 
     def get_character_details(self) -> dict[str, int | str]:
 
-        request = Request(f"https://account.battleon.com/charpage/details?id={self.character_id}", headers={
+        request = Request(self.get_character_detail_url(self.character_id), headers={
             "User-Agent": "Mozilla/5.0"
         })
         
@@ -69,7 +72,7 @@ class Grind(Mode):
         except (HTTPError, KeyError):
             warn(
                 "Could not retrieve character details from the battleon API.",
-                "Please check if the following URL endpoint is accessible: https://account.battleon.com/charpage/details?id=10"
+                f"Please check if the following URL endpoint is accessible: {self.get_character_detail_url(10)}"
             )
             raise
 
@@ -102,6 +105,7 @@ class Grind(Mode):
         
         filled_length = int(length * progress)
         bar = f"{'█'*filled_length}{'-'*(length - filled_length)}"
+
         print(f"Progress: |{bar}| {progress*100:.2f}%\n")
 
     def prepare_buffs(self):
@@ -116,8 +120,11 @@ class Grind(Mode):
     def attack(self):
 
         log("Attacking..")
-        self.locate_templates.click_if_located("spells_tab")
-        self.locate_templates.click_if_located("destruction_burst", 2)
+        
+        (
+            self.locate_templates.wait_until_clicked("spells_tab")
+                                 .wait_until_clicked("destruction_burst", 2)
+        )
 
     def main_loop(self):
 
@@ -132,13 +139,14 @@ class Grind(Mode):
             self.locate_templates.click_if_located(self.fight_end_template) # if player got z-token
             self.locate_templates.click_if_located("level_up_button") # if the player is dead or has levelled up
 
-        if not self.locate_bosses.click_if_located(self.boss_name):
-            return
+        else:
+            self.locate_bosses.click_if_located(self.boss_name)
+            self.prepare_buffs()
 
-        self.prepare_buffs()
-
+        
         while not self.locate_templates.located(self.fight_end_template):
             self.attack()
 
-        self.locate_templates.wait_until_clicked(self.fight_end_template)
-        self.character_details = self.get_character_details()
+        else:
+            self.locate_templates.wait_until_clicked(self.fight_end_template)
+            self.character_details = self.get_character_details()

@@ -19,3 +19,5 @@ class Mode:
 
         while not self.completed:
             self.main_loop()
+
+        print("Grind completed!")

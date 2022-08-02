@@ -19,6 +19,7 @@ class LocateOnScreen:
     def located(self, template_name) -> tuple[float, float, float, float] | None:
         
         sleep(self.delay)
+
         return locateOnScreen(
             f"{self.template_directory}{template_name}{self.template_format}",
             confidence=self.confidence,
@@ -33,7 +34,8 @@ class LocateOnScreen:
             coordinates = self.located(template_name)
             self.log_action(template_name)
 
-        click(center(coordinates), clicks=clicks)
+        else:
+            self.click_centre(coordinates, clicks)
 
         return self
 
@@ -41,9 +43,12 @@ class LocateOnScreen:
 
         self.log_action(template_name)
         coordinates = self.located(template_name)
+        
+        return self.click_centre(coordinates, clicks)
+
+    def click_centre(self, coordinates, clicks) -> bool:
 
         if coordinates:
             click(center(coordinates), clicks=clicks)
-            return True
 
-        return False
+        return True if coordinates else False
