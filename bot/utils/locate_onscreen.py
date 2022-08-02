@@ -39,10 +39,10 @@ class LocateOnScreen:
 
     def click_if_located(self, template_name, clicks=1) -> bool:
 
+        self.log_action(template_name)
         coordinates = self.located(template_name)
 
         if coordinates:
-            self.log_action(template_name)
             click(center(coordinates), clicks=clicks)
             return True
 
