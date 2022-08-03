@@ -51,4 +51,4 @@ class LocateOnScreen:
         if coordinates:
             click(center(coordinates), clicks=clicks)
 
-        return True if coordinates else False
+        return bool(coordinates)
