@@ -18,7 +18,7 @@ class Grind(Mode):
     def __init__(self):
 
         super().__init__()
-        self.get_character_detail_url = lambda id: f"https://account.battleon.com/charpage/details?id={id}"
+        self.character_detail_url = None
         self.fight_end_template = "win_button"
         self.userdata_path = "data/userdata.json"
         self.progress = 0.0
@@ -61,18 +61,21 @@ class Grind(Mode):
 
     def get_character_details(self) -> dict[str, int | str]:
 
-        request = Request(self.get_character_detail_url(self.character_id), headers={
+        self.character_detail_url = f"https://account.battleon.com/charpage/details?id={self.character_id}"
+
+        request = Request(self.character_detail_url, headers={
             "User-Agent": "Mozilla/5.0"
         })
         
         try:
             with urlopen(request) as response:
+                print(f"Attempting to retrieve your character details from: {self.character_detail_url}")
                 return loads(response.read())["details"]
 
         except (HTTPError, KeyError):
             warn(
                 "Could not retrieve character details from the battleon API.",
-                f"Please check if the following URL endpoint is accessible: {self.get_character_detail_url(10)}"
+                "Please check if the URL endpoint is accessible."
             )
             raise
 
@@ -107,6 +110,7 @@ class Grind(Mode):
         bar = f"{'█'*filled_length}{'-'*(length - filled_length)}"
 
         print(f"Progress: |{bar}| {progress*100:.2f}%\n")
+        print(f"Retrieved from {self.character_detail_url}")
 
     def prepare_buffs(self):
         
