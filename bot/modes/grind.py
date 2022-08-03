@@ -18,7 +18,7 @@ class Grind(Mode):
     def __init__(self):
 
         super().__init__()
-        self.get_character_detail_url = lambda id : f"https://account.battleon.com/charpage/details?id={id}"
+        self.get_character_detail_url = lambda id: f"https://account.battleon.com/charpage/details?id={id}"
         self.fight_end_template = "win_button"
         self.userdata_path = "data/userdata.json"
         self.progress = 0.0
