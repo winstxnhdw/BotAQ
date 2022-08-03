@@ -16,7 +16,7 @@ class LocateOnScreen:
         self.delay = delay
         self.grayscale = grayscale
 
-    def located(self, template_name) -> tuple[float, float, float, float] | None:
+    def located(self, template_name) -> tuple[int, int, int, int] | None:
         
         sleep(self.delay)
 
@@ -34,8 +34,7 @@ class LocateOnScreen:
             coordinates = self.located(template_name)
             self.log_action(template_name)
 
-        else:
-            self.click_centre(coordinates, clicks)
+        self.click_centre(coordinates, clicks)
 
         return self
 

@@ -25,7 +25,7 @@ class Grind(Mode):
 
         self.character_id = self.get_character_id()
         self.character_details = self.get_character_details()
-        self.is_x_guardian = True if self.character_details["type"] == "X-Guardian" else False
+        self.is_x_guardian = self.character_details["type"] == "X-Guardian"
 
         boss_template_directory = f"{self.templates_directory}/bosses/"
         self.boss_name = self.get_boss_name(boss_template_directory)
@@ -126,7 +126,6 @@ class Grind(Mode):
     def main_loop(self):
 
         clear_console()
-        
         self.print_progress_bar(self.progress)
         self.completed = self.progress >= 100.0
 
@@ -136,14 +135,11 @@ class Grind(Mode):
             self.locate_templates.click_if_located(self.fight_end_template) # if player got z-token
             self.locate_templates.click_if_located("level_up_button") # if the player is dead or has levelled up
 
-        else:
-            self.locate_bosses.click_if_located(self.boss_name)
-            self.prepare_buffs()
-
-        
+        self.locate_bosses.click_if_located(self.boss_name)
+        self.prepare_buffs()
+    
         while not self.locate_templates.located(self.fight_end_template):
             self.attack()
 
-        else:
-            self.locate_templates.wait_until_clicked(self.fight_end_template)
-            self.character_details = self.get_character_details()
+        self.locate_templates.wait_until_clicked(self.fight_end_template)
+        self.character_details = self.get_character_details()
