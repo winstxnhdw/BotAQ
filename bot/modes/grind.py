@@ -120,11 +120,8 @@ class Grind(Mode):
     def attack(self):
 
         log("Attacking..")
-        
-        (
-            self.locate_templates.wait_until_clicked("spells_tab")
-                                 .wait_until_clicked("destruction_burst", 2)
-        )
+        self.locate_templates.click_if_located("spells_tab")
+        self.locate_templates.click_if_located("destruction_burst", 2)
 
     def main_loop(self):
 
