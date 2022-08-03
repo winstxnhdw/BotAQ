@@ -32,7 +32,7 @@ class Grind(Mode):
         self.locate_bosses = LocateOnScreen(boss_template_directory, self.format, self.confidence_threshold, 0.5)
 
 
-    def get_character_id(self):
+    def get_character_id(self) -> int:
 
         clear_console()
 
