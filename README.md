@@ -1,8 +1,5 @@
 # BotAQ
 
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/winstxnhdw/BotAQ.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/winstxnhdw/BotAQ/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/winstxnhdw/BotAQ.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/winstxnhdw/BotAQ/context:python)
-
 BotAQ is a CLI bot made to grind bosses in Adventure Quest. It utilises the PyAutoGUI library to simulate human input and perform template matching. Unfortunately, this was not made with versatility in mind, as it requires the player to reach certain specific conditions within the game.
 
 <div align="center">
