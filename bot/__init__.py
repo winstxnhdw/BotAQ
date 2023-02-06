@@ -4,7 +4,7 @@ from bot.modes import ChargeKindred, ChargeBookOfBurns
 
 from bot.console import warn, incorrect_input, clear_console
 
-def get_bot_mode(modes: str) -> str:
+def get_bot_mode(modes: list[str]) -> str:
 
     while True:
         for i, mode in enumerate(modes):
@@ -12,7 +12,7 @@ def get_bot_mode(modes: str) -> str:
 
         try:
             mode_index = int(input(f"\nSelect mode (0 - {len(modes) - 1}): "))
-            return list(modes)[mode_index]
+            return modes[mode_index]
 
         except (ValueError, IndexError):
             incorrect_input()
@@ -30,7 +30,7 @@ def main():
     }
 
     try:
-        mode = get_bot_mode(modes.keys())
+        mode = get_bot_mode(list(modes.keys()))
         modes[mode]().start()
 
     except KeyboardInterrupt:
