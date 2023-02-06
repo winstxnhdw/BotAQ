@@ -7,7 +7,8 @@ from bot.console import warn, incorrect_input, clear_console
 def get_bot_mode(modes: str) -> str:
 
     while True:
-        [print(f"[{i}] {mode}") for i, mode in enumerate(modes)]
+        for i, mode in enumerate(modes):
+            print(f"[{i}] {mode}")
 
         try:
             mode_index = int(input(f"\nSelect mode (0 - {len(modes) - 1}): "))
