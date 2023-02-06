@@ -91,14 +91,17 @@ class Grind(Mode):
 
         clear_console()
         
-        boss_names = [file.split('.')[0] for file in listdir(boss_template_directory) if isfile(f"{boss_template_directory}/{file}")]
-        max_boss_index = len(boss_names) - 1
+        boss_names = [
+            file.split('.')[0] for file in listdir(boss_template_directory)
+            if isfile(f"{boss_template_directory}/{file}")
+        ]
 
         while True:
-            [print(f"[{i}] {underscore_to_title(boss_name)}") for i, boss_name in enumerate(boss_names)]
+            for i, boss_name in enumerate(boss_names):
+                print(f"[{i}] {underscore_to_title(boss_name)}")
 
             try:
-                boss_index = int(input(f"\nBoss index (0 - {max_boss_index}): "))
+                boss_index = int(input(f"\nBoss index (0 - {len(boss_names) - 1}): "))
                 return boss_names[boss_index]
 
             except (ValueError, IndexError):
