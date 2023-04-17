@@ -1,5 +1,7 @@
 # BotAQ
 
+[![dependabot.yml](https://github.com/winstxnhdw/BotAQ/actions/workflows/dependabot.yml/badge.svg)](https://github.com/winstxnhdw/BotAQ/actions/workflows/dependabot.yml)
+
 BotAQ is a CLI bot made to grind bosses in Adventure Quest. It utilises the PyAutoGUI library to simulate human input and perform template matching. Unfortunately, this was not made with versatility in mind, as it requires the player to reach certain specific conditions within the game.
 
 <div align="center">
